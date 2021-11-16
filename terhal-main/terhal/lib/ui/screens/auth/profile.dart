@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/const_images_paths.dart';
+import 'package:terhal/ui/screens/auth/reset_password.dart';
+import 'package:terhal/ui/screens/settings/customer_service.dart';
+import 'package:terhal/ui/screens/settings/favorite.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -9,6 +12,41 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  get child => null;
+/*   Future<void> _signOut() async {
+    try {
+      await auth.signOut();
+    } catch (e) {
+      print(e.toString());
+    }
+  } */
+
+  Future<void>_confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await  showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('Logout'),
+            content: Text('Are you sure that you want to logout?'),
+
+            actions:<Widget> [
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: Text('Logout'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('Cancel'),
+              ),
+            ],
+          );
+        }
+      );
+     if (didRequestSignOut == true) {
+      // _signOut();
+     }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,61 +114,91 @@ class _ProfileState extends State<Profile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Container(
-                  height: 60,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Color(0xffE6EFF1),
-                    borderRadius: BorderRadius.circular(10),
+                InkWell(
+                  onTap: (){
+                     Navigator.push
+                      (context,
+                      MaterialPageRoute(
+                          builder: (context) => Favorite()),
+                    );
+                  },
+                  child: Container(
+                    height: 60,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xffE6EFF1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                        child: ComponentText.buildTextWidget(
+                      title: 'Favourite',
+                    )),
                   ),
-                  child: Center(
-                      child: ComponentText.buildTextWidget(
-                    title: 'Favourite',
-                  )),
                 ),
-                Container(
-                  height: 60,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Color(0xffE6EFF1),
-                    borderRadius: BorderRadius.circular(10),
+                InkWell(
+                  onTap: (){
+                       Navigator.push
+                      (context,
+                      MaterialPageRoute(
+                          builder: (context) => Restpassword()),
+                    );
+                  },
+                  child: Container(
+                    height: 60,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xffE6EFF1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                        child: ComponentText.buildTextWidget(
+                      title: 'Resest Password',
+                    )),
                   ),
-                  child: Center(
-                      child: ComponentText.buildTextWidget(
-                    title: 'Resest Password',
-                  )),
                 ),
               ],
             ),
             ComponentSizedBox.topMargin(size: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  height: 60,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Color(0xffE6EFF1),
-                    borderRadius: BorderRadius.circular(10),
+            InkWell(
+              onTap: (){
+                 Navigator.push
+                      (context,
+                      MaterialPageRoute(
+                          builder: (context) => Customerservice()),
+                    );
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    height: 60,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      color: Color(0xffE6EFF1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                        child: ComponentText.buildTextWidget(
+                      title: 'Customer\n  Service',
+                    )),
                   ),
-                  child: Center(
-                      child: ComponentText.buildTextWidget(
-                    title: 'Customer\n  Service',
-                  )),
-                ),
-                Container(
-                  height: 60,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: Color(0xffE6EFF1),
-                    borderRadius: BorderRadius.circular(10),
+                  InkWell(
+                    onTap: () =>_confirmSignOut(context),
+                    child: Container(
+                      height: 60,
+                      width: 150,
+                      decoration: BoxDecoration(
+                        color: Color(0xffE6EFF1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                          child: ComponentText.buildTextWidget(
+                        title: 'Log out',
+                      )),
+                    ),
                   ),
-                  child: Center(
-                      child: ComponentText.buildTextWidget(
-                    title: 'Log out',
-                  )),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -174,7 +242,9 @@ class Profile extends StatelessWidget {
 
             actions:<Widget> [
               TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
+                  onPressed: () =>
+                  
+                  avigator.of(context).pop(true),
                   child: Text('Logout'),
               ),
               TextButton(

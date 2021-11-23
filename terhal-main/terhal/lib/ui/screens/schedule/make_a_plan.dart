@@ -10,6 +10,7 @@ class Planatrip extends StatelessWidget {
   Planatrip({
     Key key,
   }) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +52,7 @@ class Planatrip extends StatelessWidget {
                       borderRadius: BorderRadius.circular(40.0)),
                 ),
                 onPressed: () {
-                  Get.to(GetPlanScreen());
+                  Get.to(GetSuggestedPlanTwoScreen());
                 },
               ),
             ),

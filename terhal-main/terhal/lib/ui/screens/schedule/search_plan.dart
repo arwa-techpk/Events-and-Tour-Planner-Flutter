@@ -1,20 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:terhal/components/component_form_fields.dart';
+import 'package:terhal/ui/screens/explore_screen/discover_screen.dart';
+import 'package:terhal/ui/screens/schedule/make_a_plan1_screen.dart';
+import 'package:terhal/utils/size_config.dart';
+import 'package:terhal/utils/utils.dart';
 
-class Searchaplan extends StatelessWidget {
+class Searchaplan extends StatefulWidget {
   Searchaplan({
     Key key,
   }) : super(key: key);
+
+  @override
+  State<Searchaplan> createState() => _SearchaplanState();
+}
+
+class _SearchaplanState extends State<Searchaplan> {
+  TextEditingController _controller = TextEditingController();
+  final firestoreInstance = FirebaseFirestore.instance;
+  String slug = '';
+  void searchPlace({String slug}) {
+    Utils.showLoader();
+    bool isfound=false;
+    firestoreInstance.collection("places").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        
+        if (slug.toLowerCase() == result['name'].toString().toLowerCase()) {
+          isfound=true;
+          Utils.hideLoader();
+          Get.to(MakeAPlanOneScreen(
+            placeName: result['name'],
+          ));
+         
+        }
+      });
+      if(!isfound){
+      Fluttertoast.showToast(msg: 'No place Found');
+      }
+      Utils.hideLoader();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       body: Stack(
         children: <Widget>[
-           Container(
-            child: Image.asset('image/images/riyadhView.jpg',height: 350,width: MediaQuery.of(context).size.width,fit: BoxFit.fill,),
-          ),
           Pinned.fromPins(
             Pin(start: 0.0, end: -97.0),
             Pin(size: 191.2, end: 49.8),
@@ -51,79 +88,141 @@ class Searchaplan extends StatelessWidget {
               fit: BoxFit.fill,
             ),
           ),
-         
-         
-          Pinned.fromPins(
-            Pin(size: 250.0, middle: 0.526),
-            Pin(size: 50.0, middle: 0.5328),
-            child: Text(
-              'Make a plan',
-              style: TextStyle(
-                fontFamily: 'InaiMathi',
-                fontSize: 40,
-                color: const Color(0xff336c7e),
-                fontWeight: FontWeight.w700,
+          Column(
+            children: [
+              Container(
+                child: Image.asset(
+                  'image/images/riyadhView.jpg',
+                  height: 350,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.fill,
+                ),
               ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 42.0, end: 42.0),
-            Pin(size: 44.0, middle: 0.6654),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22.0),
-                color: const Color(0xffffffff),
-                border: Border.all(width: 1.0, color: const Color(0xff707070)),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0x29000000),
-                    offset: Offset(0, 3),
-                    blurRadius: 6,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Make a plan',
+                  style: TextStyle(
+                    fontFamily: 'InaiMathi',
+                    fontSize: 40,
+                    color: const Color(0xff336c7e),
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
+                  textAlign: TextAlign.left,
+                ),
               ),
-            ),
-          ),
-          
-          
-          Pinned.fromPins(
-            Pin(size: 190.0, middle: 0.49),
-            Pin(size: 17.0, middle: 0.605),
-            child: Text(
-              'Search For place or event:',
-              style: TextStyle(
-                fontFamily: 'Arial',
-                fontSize: 16,
-                color: const Color(0xff000000),
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Container(child: buildSearchWidget(context)),
               ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(size: 142.0, middle: 0.484),
-            Pin(size: 47.0, middle: 0.7503),
-            child: Container(
-                      child: ElevatedButton(
-                              child: Text(
-                                'Search',
-                                style: TextStyle(
-                                fontSize: 22,
-                                
-                                ),
-                              ),
-                            
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xff56a1af),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)), 
-                                       ),
-                              onPressed: () {},   
-                              
-                                ),
-                  ), 
-          ),
-          
+              Container(
+                width: 160,
+                height: 60,
+                child: ElevatedButton(
+                  child: Text(
+                    'Search',
+                    style: TextStyle(
+                      fontSize: 22,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xff56a1af),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0)),
+                  ),
+                  onPressed: () {
+                    searchPlace(slug: _controller.text);
+                    //Get.to(MakeAPlanOneScreen());
+                  },
+                ),
+              ),
+            ],
+          )
         ],
+      ),
+    );
+  }
+
+  Widget buildSearchWidget(BuildContext context) {
+    return Container(
+      height: 70,
+      child: AppBar(
+        brightness: Brightness.light,
+        elevation: 0.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(60.0),
+            side: BorderSide(width: 1.0, color: Colors.black)),
+        backgroundColor: Colors.white,
+        leadingWidth: 0.0,
+        /*  leading: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(Icons.arrow_back,color: Colors.black,))), */
+        title: Container(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Theme(
+            data: ThemeData(
+              primaryColor: Colors.white,
+              hintColor: Colors.white,
+            ),
+            child: TextField(
+              style: const TextStyle(color: Colors.black),
+              controller: _controller,
+              onSubmitted: (value) {
+                if (value.length > 0) {}
+              },
+              onChanged: (value) {
+                setState(() {
+                  slug = value;
+                });
+              },
+              autofocus: true,
+              decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  fillColor: Colors.black,
+                  hintText: 'Search',
+                  labelStyle: TextStyle(color: Colors.black, fontSize: 18),
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 18)),
+            ),
+          ),
+        ),
+        /* actions: <Widget>[
+          Visibility(
+            visible: slug != null && slug.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.clear,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  _controller.clear();
+                  setState(() {
+                    slug = '';
+                  });
+                },
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Get.to(DiscoverScreen());
+              // if (slug.length > 0)
+
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+          ),
+        ], */
       ),
     );
   }

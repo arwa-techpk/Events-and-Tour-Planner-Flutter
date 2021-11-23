@@ -1,15 +1,21 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/const_images_paths.dart';
 import 'package:terhal/constants/constants_colors.dart';
+import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/ui/screens/explore_screen/discover_screen.dart';
 import 'package:terhal/ui/screens/explore_screen/explore_detail_screen.dart';
+import 'package:terhal/ui/screens/schedule/make_a_plan1_screen.dart';
 import 'package:weather_icons/weather_icons.dart' as icon;
 import 'package:weather_icons/weather_icons.dart';
+
+import 'discover_screen_tab.dart';
 
 class ExploreScreen extends StatefulWidget {
   @override
@@ -25,6 +31,28 @@ class _ExploreScreenState extends State<ExploreScreen> {
   ];
   int activeIndex = 0;
   var tmp = '\u00B0';
+    final firestoreInstance = FirebaseFirestore.instance;
+ void searchPlace({String slug}) {
+    Utils.showLoader();
+    bool isfound=false;
+    firestoreInstance.collection("places").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        
+        if (slug.toLowerCase() == result['name'].toString().toLowerCase()) {
+          isfound=true;
+          Utils.hideLoader();
+          Get.to(MakeAPlanOneScreen(
+            placeName: result['name'],
+          ));
+         
+        }
+      });
+      if(!isfound){
+      Fluttertoast.showToast(msg: 'No place Found');
+      }
+      Utils.hideLoader();
+    });
+  }
   TextEditingController _controller = TextEditingController();
   String slug = '';
   @override
@@ -108,7 +136,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   buildSearchWidget(context),
                   ComponentSizedBox.topMargin(size: 10),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -169,38 +197,44 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget exploreType({String title, String icon}) {
-    return Container(
-      width: 80,
-      height: 100,
-      child: Column(
-        children: [
-          Card(
-            elevation: 2.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            color: ConstantColor.lightgreen,
-            child: Container(
-              width: 55,
-              height: 55,
-              /*  decoration: BoxDecoration(
-              
+    return InkWell(
+      onTap: (){
+       
+        Get.to(DiscoverScreenTab(placeType: title,));
+      },
+      child: Container(
+      
+        height: 100,
+        child: Column(
+          children: [
+            Card(
+              elevation: 2.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              color: ConstantColor.lightgreen,
+              child: Container(
+                width: 55,
+                height: 55,
+                /*  decoration: BoxDecoration(
                 
-                
-                  color: ConstantColor.lightgreen,
-                  borderRadius: BorderRadius.circular(15)), */
-              child: Center(
-                  child: Image.asset(
-                icon,
-                fit: BoxFit.contain,
-                width: 40,
-              )),
+                  
+                  
+                    color: ConstantColor.lightgreen,
+                    borderRadius: BorderRadius.circular(15)), */
+                child: Center(
+                    child: Image.asset(
+                  icon,
+                  fit: BoxFit.contain,
+                  width: 40,
+                )),
+              ),
             ),
-          ),
-          ComponentSizedBox.topMargin(size: 3),
-          ComponentText.buildTextWidget(
-              title: title, color: Colors.grey, fontSize: 13)
-        ],
+            ComponentSizedBox.topMargin(size: 3),
+            ComponentText.buildTextWidget(
+                title: title, color: Colors.grey, fontSize: 13)
+          ],
+        ),
       ),
     );
   }
@@ -282,10 +316,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
               color: Colors.black,
             ),
             onPressed: () {
-              _controller.clear();
+             
+             _controller.clear();
               setState(() {
                 slug = '';
               });
+
             },
           ),
         ),
@@ -295,7 +331,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
             color: Colors.black,
           ),
           onPressed: () {
-            Get.to(DiscoverScreen());
+             searchPlace(slug:_controller.text );
+           // Get.to(DiscoverScreen());
             // if (slug.length > 0)
 
             FocusScope.of(context).requestFocus(new FocusNode());

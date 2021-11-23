@@ -5,7 +5,10 @@ import 'package:terhal/components/component_checkBox.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/constants_colors.dart';
+import 'package:terhal/constants/constants_strings.dart';
 import 'package:terhal/ui/screens/schedule/get_suggested_plan3_screen.dart';
+
+enum BestTutorSite { low, med, high }
 
 class GetSuggestedPlanTwoScreen extends StatefulWidget {
   @override
@@ -15,7 +18,10 @@ class GetSuggestedPlanTwoScreen extends StatefulWidget {
 
 class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
   String _chosenValue;
+  String budget = '';
 
+  BestTutorSite _site = BestTutorSite.low;
+  BestTutorSite duration = BestTutorSite.low;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,8 +59,15 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                   children: [
                     Row(
                       children: [
-                        CustomCheckBox(
-                          onChanged: (value) {},
+                        Radio(
+                          value: BestTutorSite.low,
+                          groupValue: _site,
+                          onChanged: (BestTutorSite value) {
+                            print(value);
+                            setState(() {
+                              _site = value;
+                            });
+                          },
                         ),
                         ComponentText.buildTextWidget(
                             title: 'Low',
@@ -64,8 +77,14 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                     ),
                     Row(
                       children: [
-                        CustomCheckBox(
-                          onChanged: (value) {},
+                        Radio(
+                          value: BestTutorSite.med,
+                          groupValue: _site,
+                          onChanged: (BestTutorSite value) {
+                            setState(() {
+                              _site = value;
+                            });
+                          },
                         ),
                         ComponentText.buildTextWidget(
                             title: 'Medium',
@@ -75,8 +94,14 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                     ),
                     Row(
                       children: [
-                        CustomCheckBox(
-                          onChanged: (value) {},
+                        Radio(
+                          value: BestTutorSite.high,
+                          groupValue: _site,
+                          onChanged: (BestTutorSite value) {
+                            setState(() {
+                              _site = value;
+                            });
+                          },
                         ),
                         ComponentText.buildTextWidget(
                             title: 'High',
@@ -106,8 +131,15 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                   children: [
                     Row(
                       children: [
-                        CustomCheckBox(
-                          onChanged: (value) {},
+                        Radio(
+                          value: BestTutorSite.low,
+                          groupValue: duration,
+                          onChanged: (BestTutorSite value) {
+                            print(value);
+                            setState(() {
+                              duration = value;
+                            });
+                          },
                         ),
                         ComponentText.buildTextWidget(
                             title: '3 Days',
@@ -117,8 +149,14 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                     ),
                     Row(
                       children: [
-                        CustomCheckBox(
-                          onChanged: (value) {},
+                        Radio(
+                          value: BestTutorSite.med,
+                          groupValue: duration,
+                          onChanged: (BestTutorSite value) {
+                            setState(() {
+                              duration = value;
+                            });
+                          },
                         ),
                         ComponentText.buildTextWidget(
                             title: '5 Days',
@@ -128,8 +166,14 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                     ),
                     Row(
                       children: [
-                        CustomCheckBox(
-                          onChanged: (value) {},
+                        Radio(
+                          value: BestTutorSite.high,
+                          groupValue: duration,
+                          onChanged: (BestTutorSite value) {
+                            setState(() {
+                              duration = value;
+                            });
+                          },
                         ),
                         ComponentText.buildTextWidget(
                             title: '1 Week',
@@ -236,7 +280,38 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                   btnColor: ConstantColor.medblue,
                   borderColor: ConstantColor.medblue,
                   onPressed: () {
-                    Get.to(GetSuggestedPlanThreeScreen());
+                    String selectedBudget = ConstantString.plan_low_riyadh_3;
+                    if (_site == BestTutorSite.low &&
+                        duration == BestTutorSite.low) {
+                      selectedBudget = ConstantString.plan_low_riyadh_3;
+                    } else if (_site == BestTutorSite.low &&
+                        duration == BestTutorSite.med) {
+                      selectedBudget = ConstantString.plan_low_riyadh_5;
+                    } else if (_site == BestTutorSite.low &&
+                        duration == BestTutorSite.high) {
+                      selectedBudget = ConstantString.plan_low_riyadh_7;
+                    } else if (_site == BestTutorSite.med &&
+                        duration == BestTutorSite.low) {
+                      selectedBudget = ConstantString.plan_medium_riyadh_3;
+                    } else if (_site == BestTutorSite.med &&
+                        duration == BestTutorSite.med) {
+                      selectedBudget = ConstantString.plan_medium_riyadh_5;
+                    } else if (_site == BestTutorSite.med &&
+                        duration == BestTutorSite.high) {
+                      selectedBudget = ConstantString.plan_medium_riyadh_7;
+                    } else if (_site == BestTutorSite.high &&
+                        duration == BestTutorSite.low) {
+                      selectedBudget = ConstantString.plan_high_riyadh_3;
+                    } else if (_site == BestTutorSite.high &&
+                        duration == BestTutorSite.med) {
+                      selectedBudget = ConstantString.plan_high_riyadh_5;
+                    } else if (_site == BestTutorSite.high &&
+                        duration == BestTutorSite.high) {
+                      selectedBudget = ConstantString.plan_high_riyadh_7;
+                    }
+                    Get.to(GetSuggestedPlanThreeScreen(
+                      selectedBudget: selectedBudget,
+                    ));
                   },
                   texColor: Colors.white)
             ],

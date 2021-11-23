@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "196216369778",
+    "project_id": "terhal-gp2",
+    "storage_bucket": "terhal-gp2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196216369778:android:bcd229e32ca3553a8108eb",
+        "android_client_info": {
+          "package_name": "com.app.terhal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196216369778-gfrjq1n25hboj5f0h189ddnqc3jkbqmf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAvFcssl9rZpOuxyhg5p5-9uHl-lxJqR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196216369778-gfrjq1n25hboj5f0h189ddnqc3jkbqmf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "196216369778-t32opqubsn50gmnrt3ul5iktdmb8go8u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.terhal"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196216369778:android:42f120c0fed934c38108eb",
+        "android_client_info": {
+          "package_name": "com.example.gp2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196216369778-gfrjq1n25hboj5f0h189ddnqc3jkbqmf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAvFcssl9rZpOuxyhg5p5-9uHl-lxJqR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196216369778-gfrjq1n25hboj5f0h189ddnqc3jkbqmf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "196216369778-t32opqubsn50gmnrt3ul5iktdmb8go8u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.terhal"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

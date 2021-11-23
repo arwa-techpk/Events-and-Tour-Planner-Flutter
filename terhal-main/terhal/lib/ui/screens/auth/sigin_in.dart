@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:terhal/common_widgets/validators.dart';
 import 'package:terhal/components/bottom_navigation.dart';
+import 'package:terhal/controllers/auth/auth_service.dart';
+import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/ui/screens/auth/profile.dart';
 import 'package:terhal/ui/screens/auth/reset_password.dart';
 import 'package:terhal/ui/screens/home_screen.dart';
+
 enum SigninType { signin, register }
-class SignIn extends StatefulWidget with EmailAndPasswordValidators{
+
+class SignIn extends StatefulWidget with EmailAndPasswordValidators {
   static const id = 'SignIn';
-   SignIn({ Key key }) : super(key: key);
+  SignIn({Key key}) : super(key: key);
 
   @override
   _SignInState createState() => _SignInState();
@@ -19,14 +24,15 @@ class SignIn extends StatefulWidget with EmailAndPasswordValidators{
 class _SignInState extends State<SignIn> {
   final TextEditingController _emailcontroller = new TextEditingController();
   final TextEditingController _passwordcontroller = new TextEditingController();
+  Auth auth = Auth();
 
   String get _email => _emailcontroller.text;
   String get _password => _passwordcontroller.text;
 
   bool _submitted = false;
   bool _isLoading = false;
-    SigninType _formType = SigninType.signin;
-      void _toggleFormType() {
+  SigninType _formType = SigninType.signin;
+  void _toggleFormType() {
     setState(() {
       _submitted = false;
       _formType = _formType == SigninType.signin
@@ -37,19 +43,59 @@ class _SignInState extends State<SignIn> {
     _passwordcontroller.clear();
   }
 
+  void _submit() async {
+    setState(() {
+      _submitted = true;
+      _isLoading = true;
+    });
+    Utils.showLoader();
+    try {
+      if (_formType == SigninType.signin) {
+        await auth.signInWithEmailAndPassword(_email, _password);
+      } else {
+        await auth.createUserWithEmailAndPassword(_email, _password);
+      }
+      Utils.hideLoader();
+      Get.offAll(BottomNavigation());
+      //Navigator.of(context).pop();
+    } catch (e) {
+      Utils.hideLoader();
+      print(e.toString());
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Sign in failed'),
+              content: Text(e.toString()),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          });
+    } finally {
+      Utils.hideLoader();
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
-
   Widget build(BuildContext context) {
     final primaryText = _formType == SigninType.signin ? 'Sign in' : 'Sign up';
     final secondaryText = _formType == SigninType.signin
         ? 'Need an account? Register'
         : 'Have an account? Sign in';
-    bool submitEnabled = widget.emailValidator.isValid(_email) && widget.passwordValidator.isValid(_password) && !_isLoading;
-    bool emailShowErrorText = _submitted && !widget.emailValidator.isValid(_email);
-    bool passwordShowErrorText = _submitted && !widget.passwordValidator.isValid(_password);
-
-
+    bool submitEnabled = widget.emailValidator.isValid(_email) &&
+        widget.passwordValidator.isValid(_password) &&
+        !_isLoading;
+    bool emailShowErrorText =
+        _submitted && !widget.emailValidator.isValid(_email);
+    bool passwordShowErrorText =
+        _submitted && !widget.passwordValidator.isValid(_password);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -83,17 +129,17 @@ class _SignInState extends State<SignIn> {
               fit: BoxFit.fill,
             ),
           ),
-
           Pinned.fromPins(
               Pin(start: 26.0, end: 9.0), Pin(size: 39.0, middle: 0.803),
               child: TextButton(
                 onPressed: !_isLoading ? _toggleFormType : null,
                 style: TextButton.styleFrom(
-                  primary:const Color(0xff56a1af),
+                  primary: const Color(0xff56a1af),
                 ),
                 child: Text(
                   secondaryText,
-                  style:const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w700),
                 ),
               )),
           Pinned.fromPins(
@@ -123,12 +169,10 @@ class _SignInState extends State<SignIn> {
               fit: BoxFit.fill,
             ),
           ),
-
           Pinned.fromPins(
             Pin(start: 38.0, end: 38.0),
             Pin(size: 45.0, middle: 0.3272),
             child: Container(
-
                 child: TextField(
               controller: _emailcontroller,
               textAlignVertical: TextAlignVertical.bottom,
@@ -141,14 +185,15 @@ class _SignInState extends State<SignIn> {
                   borderRadius: BorderRadius.circular(50),
                 ),
                 hintText: 'Email',
-                hintStyle:  TextStyle(
+                hintStyle: TextStyle(
                   fontSize: 20,
                 ),
-                errorText: emailShowErrorText? widget.invalidEmailErrorText : null,
+                errorText:
+                    emailShowErrorText ? widget.invalidEmailErrorText : null,
                 enabled: _isLoading == false,
               ),
               keyboardType: TextInputType.emailAddress,
-              onChanged: (password) =>  _updateState(),
+              onChanged: (password) => _updateState(),
             )),
           ),
           Pinned.fromPins(
@@ -156,25 +201,28 @@ class _SignInState extends State<SignIn> {
             Pin(size: 45.0, middle: 0.4316),
             child: Container(
                 child: TextField(
+                  
               controller: _passwordcontroller,
               textAlignVertical: TextAlignVertical.bottom,
               decoration: InputDecoration(
                 filled: true,
-                fillColor:  Color(0xffffffff),
+                fillColor: Color(0xffffffff),
                 border: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color:  Color(0xff707070), width: 2),
+                  borderSide: BorderSide(color: Color(0xff707070), width: 2),
                   borderRadius: BorderRadius.circular(50),
                 ),
                 hintText: 'Password',
                 hintStyle: const TextStyle(
                   fontSize: 20,
                 ),
-                errorText: passwordShowErrorText ? widget.invalidPasswordErrorText : null,
+                errorText: passwordShowErrorText
+                    ? widget.invalidPasswordErrorText
+                    : null,
                 enabled: _isLoading == false,
               ),
+              obscureText: true,
               keyboardType: TextInputType.url,
-              onChanged: (password) =>  _updateState(),
+              onChanged: (password) => _updateState(),
             )),
           ),
           Pinned.fromPins(
@@ -184,7 +232,7 @@ class _SignInState extends State<SignIn> {
               child: ElevatedButton(
                 child: Text(
                   primaryText,
-                  style:const TextStyle(
+                  style: const TextStyle(
                     fontSize: 30,
                   ),
                 ),
@@ -193,62 +241,59 @@ class _SignInState extends State<SignIn> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40.0)),
                 ),
-                onPressed:(){
-                  if(primaryText  == 'Sign in'){
-                    Get.to(BottomNavigation());
-                  }
+                onPressed: () {
+                  // if (primaryText == 'Sign in') {
+                  _submit();
+                  //  Get.to(BottomNavigation());
+                  //}
                 },
               ),
             ),
           ),
-         
-           Pinned.fromPins(
-              Pin(start: 37.0, end: 7.0),
-              Pin(size: 28.0, middle: 0.5005),
-              child: const Text.rich(
-                TextSpan(
-                  style: TextStyle(
-                    fontFamily: 'InaiMathi',
-                    fontSize: 20,
-                    color:  Color(0xff707070),
-                  ),
-                  children: [
-                    TextSpan(
-                      text: 'Forgot password? ',
-                    ),
-          
-                  ],
+          Pinned.fromPins(
+            Pin(start: 37.0, end: 7.0),
+            Pin(size: 28.0, middle: 0.5005),
+            child: const Text.rich(
+              TextSpan(
+                style: TextStyle(
+                  fontFamily: 'InaiMathi',
+                  fontSize: 20,
+                  color: Color(0xff707070),
                 ),
-                textHeightBehavior:
-                    TextHeightBehavior(applyHeightToFirstAscent: false),
-                textAlign: TextAlign.left,
+                children: [
+                  TextSpan(
+                    text: 'Forgot password? ',
+                  ),
+                ],
               ),
+              textHeightBehavior:
+                  TextHeightBehavior(applyHeightToFirstAscent: false),
+              textAlign: TextAlign.left,
             ),
-          
-        Pinned.fromPins(
-                Pin(start: 177.0, end: 0.040), Pin(size: 39.0, middle: 0.498000),
-                child: TextButton(
-                  onPressed: () {
-                    Get.to(Restpassword());
-                  },
-                  style: TextButton.styleFrom(
-                    primary: Color(0xff56a1af),
-                  ),
-                  child:const Text(
-                    'Rest Password',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
-                )),
-          
+          ),
+          Pinned.fromPins(
+              Pin(start: 177.0, end: 0.040), Pin(size: 39.0, middle: 0.498000),
+              child: TextButton(
+                onPressed: () {
+                  Get.to(Restpassword());
+                },
+                style: TextButton.styleFrom(
+                  primary: Color(0xff56a1af),
+                ),
+                child: const Text(
+                  'Rest Password',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                ),
+              )),
           Pinned.fromPins(
             Pin(size: 120.0, start: 51.0),
             Pin(size: 50.0, middle: 0.2428),
-            child:const Text(
+            child: const Text(
               'Hello! ',
               style: TextStyle(
                 fontFamily: 'InaiMathi',
                 fontSize: 40,
-                color:  Color(0xff000000),
+                color: Color(0xff000000),
               ),
               textAlign: TextAlign.left,
             ),
@@ -256,12 +301,13 @@ class _SignInState extends State<SignIn> {
         ],
       ),
     );
-
   }
-   void _updateState() {
+
+  void _updateState() {
     setState(() {});
   }
 }
+
 const String _svg_wv9s33 =
     '<svg viewBox="-53.5 632.1 434.0 197.7" ><path transform="matrix(-1.0, 0.0, 0.0, -1.0, 380.5, 829.74)" d="M 0 49.40488433837891 L 0 197.6746826171875 C 15.3505859375 181.7293701171875 32.59451293945312 167.1896514892578 51.25494384765625 154.4613800048828 C 70.05514526367188 141.6377105712891 90.38179016113281 130.5933380126953 111.6695098876953 121.6354141235352 C 133.349853515625 112.512077331543 156.1691589355469 105.4956512451172 179.4941711425781 100.7793884277344 C 203.4646911621094 95.93318176269531 228.1875915527344 93.47618865966797 252.976318359375 93.47618865966797 C 285.6346435546875 93.47618865966797 317.9125671386719 97.7125244140625 348.9139099121094 106.0680236816406 C 378.9366455078125 114.1603927612305 407.5635070800781 126.0520629882812 434.0000305175781 141.414306640625 L 434.0000305175781 121.2627258300781 C 379.8927001953125 48.32815551757812 285.2764892578125 0 177.5977172851562 0 C 111.3180389404297 0 49.98129272460938 18.3150463104248 0 49.40488433837891 Z" fill="#557b09" fill-opacity="0.5" stroke="none" stroke-width="1" stroke-opacity="0.5" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
 const String _svg_pt2dil =

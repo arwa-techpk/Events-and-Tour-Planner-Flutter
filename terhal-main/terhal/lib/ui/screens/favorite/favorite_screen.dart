@@ -40,7 +40,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
-        automaticallyImplyLeading: false,
+      
         title: Text('Favorite'),),
       body: StaggeredGridView.countBuilder(
           staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),

@@ -1,13 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/constants_colors.dart';
+import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/discover_model.dart';
 import 'package:terhal/ui/screens/explore_screen/discover_screen_tab.dart';
+import 'package:terhal/ui/screens/schedule/make_a_plan1_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
-  const DiscoverScreen({Key key}) : super(key: key);
+  String placType;
+  DiscoverScreen({this.placType});
+  
 
   @override
   _DiscoverScreenState createState() => _DiscoverScreenState();
@@ -26,7 +33,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     // TODO: implement initState
     super.initState();
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -55,7 +62,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ComponentText.buildTextWidget(
-                        title: 'Discover',
+                        title: widget.placType,
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),

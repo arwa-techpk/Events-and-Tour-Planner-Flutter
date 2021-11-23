@@ -1,50 +1,48 @@
-import 'package:dio/dio.dart' as dio;
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:terhal/constants/api_end_points.dart';
-import 'package:terhal/models/login_request_model.dart';
-import 'package:terhal/models/user_model.dart';
-import 'package:terhal/networking/networking_managar.dart';
+import 'package:terhal/ui/screens/pref_manager.dart';
 
-abstract class AuthenticationRepo extends GetxService {
-  Future<UserModel> getCurrentUser();
- // Future<UserModel> signInWithEmailAndPassword(String email, String password);
+abstract class AuthBase {
+  User get currentUser;
+
+  Stream<User> authStateChanges();
+
+  Future<User> signInWithEmailAndPassword(String email, String password);
+
+  Future<User> createUserWithEmailAndPassword(String email, String password);
   Future<void> signOut();
 }
 
-class FakeAuthenticationService extends AuthenticationRepo {
-  LoginRequestModel loginRequestModel;
+class Auth implements AuthBase {
+  final _firebaseAuth = FirebaseAuth.instance;
+
   @override
-  Future<UserModel> getCurrentUser() async {
-    // simulated delay
-    await Future.delayed(Duration(seconds: 2));
-    return null;
+  Stream<User> authStateChanges() => _firebaseAuth.authStateChanges();
+
+  @override
+  User get currentUser => _firebaseAuth.currentUser;
+
+  @override
+  Future<User> signInWithEmailAndPassword(String email, String password) async {
+    final userCredential = await _firebaseAuth.signInWithCredential(
+      EmailAuthProvider.credential(email: email, password: password),
+    );
+    await Get.find<PrefManager>().save('email', userCredential.user.email);
+    await Get.find<PrefManager>().save('user', userCredential.user.uid);
+    return userCredential.user;
   }
 
- /*  @override
-  Future<UserModel> signInWithEmailAndPassword(
+  @override
+  Future<User> createUserWithEmailAndPassword(
       String email, String password) async {
-    loginRequestModel = new LoginRequestModel();
-    loginRequestModel.username = email;
-    loginRequestModel.password = password;
-    dio.Response response = (await NetworkManager().callApi(
-      method: HttpMethod.Post,
-      urlEndPoint: ApiEndPoint.apiEndPointLogIn,
-      isFormDataRequest: false,
-      body: loginRequestModel.toJson(),
-    ));
-
-    return UserModel.fromJson(response.data);
-  } */
-
-  @override
-  Future<void> signOut() {
-    return null;
+    final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    return userCredential.user;
   }
-}
 
-class AuthenticationException implements Exception {
-  final String message;
-
-  AuthenticationException({this.message = 'Unknown error occurred. '});
+  Future<void> signOut() async {
+    await _firebaseAuth.signOut();
+  }
 }

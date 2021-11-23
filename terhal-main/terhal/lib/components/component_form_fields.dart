@@ -31,7 +31,7 @@ class FormFieldComponent {
         ),
         child: TextFormField(
           style: TextStyle(
-            fontSize:  SizeConfig.getFont(16.0),
+            fontSize:  16.0,
             color: Colors.white
           ),
           

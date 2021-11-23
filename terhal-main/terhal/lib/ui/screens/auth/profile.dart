@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/const_images_paths.dart';
+import 'package:terhal/controllers/auth/auth_service.dart';
 import 'package:terhal/ui/screens/auth/reset_password.dart';
+import 'package:terhal/ui/screens/auth/welcome_screen.dart';
+import 'package:terhal/ui/screens/favorite/favorite_screen.dart';
 import 'package:terhal/ui/screens/settings/customer_service.dart';
 import 'package:terhal/ui/screens/settings/favorite.dart';
+
+import '../pref_manager.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -12,27 +18,32 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Auth auth = Auth();
   get child => null;
-/*   Future<void> _signOut() async {
+  Future<void> _signOut() async {
     try {
       await auth.signOut();
+      await Get.find<PrefManager>().save('email', null);
+      await Get.find<PrefManager>().save('user', null);
+      Get.offAll(WelcomeScreen());
     } catch (e) {
       print(e.toString());
     }
-  } */
+  }
 
-  Future<void>_confirmSignOut(BuildContext context) async {
-    final didRequestSignOut = await  showDialog(
+  String email = '';
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final didRequestSignOut = await showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return AlertDialog(
             title: Text('Logout'),
             content: Text('Are you sure that you want to logout?'),
-
-            actions:<Widget> [
+            actions: <Widget>[
               TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: Text('Logout'),
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text('Logout'),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -40,11 +51,22 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           );
-        }
-      );
-     if (didRequestSignOut == true) {
-      // _signOut();
-     }
+        });
+    if (didRequestSignOut == true) {
+      _signOut();
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUser();
+  }
+
+  getUser() async {
+    email = await Get.find<PrefManager>().read('email');
+    setState(() {});
   }
 
   @override
@@ -89,7 +111,7 @@ class _ProfileState extends State<Profile> {
                             ),
                             ComponentSizedBox.topMargin(size: 10),
                             ComponentText.buildTextWidget(
-                                title: 'Norah Alqraini', fontSize: 18),
+                                title: email, fontSize: 18),
                           ],
                         ),
                       ),
@@ -115,11 +137,11 @@ class _ProfileState extends State<Profile> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 InkWell(
-                  onTap: (){
-                     Navigator.push
-                      (context,
+                  onTap: () {
+                    Navigator.push(
+                      context,
                       MaterialPageRoute(
-                          builder: (context) => Favorite()),
+                          builder: (context) => const FavoriteScreen()),
                     );
                   },
                   child: Container(
@@ -136,11 +158,10 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 InkWell(
-                  onTap: (){
-                       Navigator.push
-                      (context,
-                      MaterialPageRoute(
-                          builder: (context) => Restpassword()),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Restpassword()),
                     );
                   },
                   child: Container(
@@ -160,12 +181,11 @@ class _ProfileState extends State<Profile> {
             ),
             ComponentSizedBox.topMargin(size: 50),
             InkWell(
-              onTap: (){
-                 Navigator.push
-                      (context,
-                      MaterialPageRoute(
-                          builder: (context) => Customerservice()),
-                    );
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Customerservice()),
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -183,7 +203,7 @@ class _ProfileState extends State<Profile> {
                     )),
                   ),
                   InkWell(
-                    onTap: () =>_confirmSignOut(context),
+                    onTap: () => _confirmSignOut(context),
                     child: Container(
                       height: 60,
                       width: 150,

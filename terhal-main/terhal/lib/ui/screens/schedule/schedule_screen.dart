@@ -12,16 +12,14 @@ import 'package:terhal/constants/constants_strings.dart';
 import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/plan.dart';
 
-class GetSuggestedPlanThreeScreen extends StatefulWidget {
+class ScheduleScreen extends StatefulWidget {
   String selectedBudget;
-  GetSuggestedPlanThreeScreen({this.selectedBudget});
+  ScheduleScreen({this.selectedBudget});
   @override
-  _GetSuggestedPlanThreeScreenState createState() =>
-      _GetSuggestedPlanThreeScreenState();
+  _ScheduleScreenState createState() => _ScheduleScreenState();
 }
 
-class _GetSuggestedPlanThreeScreenState
-    extends State<GetSuggestedPlanThreeScreen> {
+class _ScheduleScreenState extends State<ScheduleScreen> {
   DateTime startDate = DateTime.now().subtract(Duration(days: 2));
   DateTime endDate = DateTime.now().add(Duration(days: 10));
   DateTime selectedDate = DateTime.now();
@@ -30,13 +28,17 @@ class _GetSuggestedPlanThreeScreenState
     DateTime.now().subtract(Duration(days: 2)),
     DateTime.now().add(Duration(days: 4))
   ];
-  String selectedTime='';
+  String selectedTime = '';
   List<PlanLocation> plans = [];
   final firestoreInstance = FirebaseFirestore.instance;
   onSelect(data) {
     selectedDate = data;
-    selectedTime =data.toString().split(' ')[0];
-    print(selectedTime);
+    selectedTime = data.toString().split(' ')[0];
+    setState(() {
+      
+    });
+    plans=[];
+    getData();
     print("Selected Date -> $data");
   }
 
@@ -46,41 +48,81 @@ class _GetSuggestedPlanThreeScreenState
 
   addPlan() {
     var firebaseUser = FirebaseAuth.instance.currentUser;
-    Utils.showLoader();
-    firestoreInstance.collection("plans").doc(firebaseUser.uid).collection(selectedTime).doc().set({
+    firestoreInstance.collection("users_plan").doc(firebaseUser.uid).set({
       "date": selectedDate,
       "city": 'Riyadh',
       "plan_type": widget.selectedBudget,
     }).then((_) {
-       Utils.hideLoader();
-      Get.offAll(BottomNavigation(isPlan: true,));
-       
+      Get.offAll(BottomNavigation());
       print("success!");
     });
   }
 
   getData() {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+
+    print(firebaseUser.uid);
+    print(selectedTime);
+
     firestoreInstance
-        .collection("plan_low_riyadh_3")
+        .collection("plans")
+        .doc(firebaseUser.uid)
         .get()
-        .then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        firestoreInstance
-            .collection("plan_low_riyadh_3")
-            .doc(result.id)
-            .collection(ConstantString.locations)
+        .then((value) {
+          firestoreInstance
+            .collection("plans")
+            .doc(firebaseUser.uid)
+            .collection(selectedTime)
             .get()
             .then((querySnapshot) {
           querySnapshot.docs.forEach((result) {
-            print(result['name']);
-            plans.add(PlanLocation(
-                name: result[ConstantString.name],
-                location: result[ConstantString.location]));
+             plans.add(PlanLocation(name: result['city']));
             setState(() {});
+          });
+        }); 
+      
+    });
+    /* firestoreInstance.collection("plans").doc().get().then((querySnapshot) {
+      /*  querySnapshot.docs.forEach((result) {
+        /*  firestoreInstance
+            .collection("users_plan")
+            .doc(firebaseUser.uid)
+            .collection('plans')
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((result) {
+            setState(() {});
+          });
+        }); */
+      }); */
+    }); */
+    /*  firestoreInstance
+        .collection("users_plan")
+        .doc(firebaseUser.uid)
+        .collection('plans')
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        print(result);
+        firestoreInstance
+            .collection("users_plan")
+            .doc()
+            .collection('plans')
+            .doc(result.id)
+            .collection(selectedTime)
+            .get()
+            .then((querySnapshot) {
+          print(result['city']);
+          querySnapshot.docs.forEach((result) {
+            print(result);
+            plans.add(PlanLocation(name: result['city']));
+
+            setState(() {});
+           
           });
         });
       });
-    });
+    }); */
   }
 
   _monthNameWidget(monthName) {
@@ -151,7 +193,8 @@ class _GetSuggestedPlanThreeScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-      selectedTime=selectedDate.toString().split(' ')[0];
+
+    selectedTime = selectedDate.toString().split(' ')[0];
     getData();
   }
 
@@ -161,7 +204,7 @@ class _GetSuggestedPlanThreeScreenState
       body: Column(
         children: [
           Container(
-            height: 300,
+            height: 250,
             decoration: BoxDecoration(
               color: ConstantColor.medgrey,
             ),
@@ -221,18 +264,6 @@ class _GetSuggestedPlanThreeScreenState
                     ),
                   ),
                   ComponentSizedBox.topMargin(size: 20),
-                  ComponentButton.buildTransparentButton(
-                      height: 50,
-                      width: 130,
-                      title: 'Add',
-                      fontsize: 20,
-                      radius: 30,
-                      btnColor: ConstantColor.medblue,
-                      borderColor: ConstantColor.medblue,
-                      onPressed: () {
-                        addPlan();
-                      },
-                      texColor: Colors.white)
                 ],
               ),
             ),

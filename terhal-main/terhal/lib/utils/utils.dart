@@ -5,8 +5,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:terhal/constants/constants_colors.dart';
-import 'package:terhal/constants/constants_strings.dart';
-
 
 
 class Utils {
@@ -86,12 +84,5 @@ class Utils {
     }
   }
 
- 
-
-  static List getSpaceSplitValues(String value){
-    int idx = value.indexOf(" ");
-    List name = [value.substring(0,idx).trim(), value.substring(idx+1).trim()];
-    return name;
-  }
   
 }

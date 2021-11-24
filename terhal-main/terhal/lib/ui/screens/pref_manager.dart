@@ -15,7 +15,11 @@ class PrefManager {
 
    read(String key) async {
     final prefs = await SharedPreferences.getInstance();
+    if(prefs.getString(key) !=null){
     return json.decode(prefs.getString(key));
+    }
+
+    return null;
   }
 
   save(String key, value) async {

@@ -11,6 +11,7 @@ import 'package:terhal/ui/screens/settings/customer_service.dart';
 import 'package:terhal/ui/screens/settings/favorite.dart';
 
 import '../pref_manager.dart';
+import 'change_name_screen.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -77,18 +78,6 @@ class _ProfileState extends State<Profile> {
           children: [
             Stack(
               children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(80),
-                        bottomRight: Radius.circular(80)),
-                    child: Image.asset(
-                      'image/images/profileBackground.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
                 Column(
                   children: [
                     ComponentSizedBox.topMargin(size: 40),
@@ -121,16 +110,27 @@ class _ProfileState extends State<Profile> {
               ],
             ),
             ComponentSizedBox.topMargin(size: 50),
-            Container(
-              height: 60,
-              width: 300,
-              decoration: BoxDecoration(
-                color: Color(0xffE6EFF1),
-                borderRadius: BorderRadius.circular(10),
+            InkWell(
+              onTap: () async {
+                final name = await Navigator.push(context,
+                    MaterialPageRoute(builder: (context) {
+                  return ChangeNameScreen();
+                }));
+                await getUser();
+                setState(() {});
+                // Get.to(ChangeNameScreen());
+              },
+              child: Container(
+                height: 60,
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Color(0xffE6EFF1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                    child: ComponentText.buildTextWidget(
+                        title: 'Change Name', fontSize: 20)),
               ),
-              child: Center(
-                  child: ComponentText.buildTextWidget(
-                      title: 'Change email', fontSize: 20)),
             ),
             ComponentSizedBox.topMargin(size: 50),
             Row(

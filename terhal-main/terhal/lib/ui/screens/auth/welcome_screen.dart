@@ -23,6 +23,7 @@ class WelcomeScreen extends StatelessWidget {
     return Container(
       child: Stack(
         children: <Widget>[
+         
           Pinned.fromPins(
             Pin(start: -30.7, end: -8.0),
             Pin(size: 229.4, start: -100.4),
@@ -125,10 +126,35 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Pinned.fromPins(
-                  Pin(size: 154.0, middle: 0.4311),
-                  Pin(size: 66.0, middle: 0.4864),
-                  child: Container(
+               
+
+
+
+                
+              ],
+            ),
+          ),
+           Padding(
+             padding: const EdgeInsets.only(top: 60,left: 16),
+             child: Text(
+                      'Welcome back to your World! ',
+                      style: TextStyle(
+                        fontFamily: 'Kailasa',
+                        fontSize: 20,
+                        color: const Color(0xff352614),
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+           ),
+           Column(
+             mainAxisAlignment: MainAxisAlignment.center,
+             crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+             
+                   Container(
+                     width: 160,
+                     height: 50,
+                     margin: EdgeInsets.only(left: 30,top: 100),
                       child: ElevatedButton(
                               child: Text(
                                 'Log In',
@@ -149,25 +175,8 @@ class WelcomeScreen extends StatelessWidget {
                               
                                 ),
                   ),
-                ),
+            ],
 
-
-
-                Pinned.fromPins(
-                  Pin(size: 278.0, middle: 0.5678),
-                  Pin(size: 26.0, middle: 0.3965),
-                  child: Text(
-                    'Welcome back to your World! ',
-                    style: TextStyle(
-                      fontFamily: 'Kailasa',
-                      fontSize: 20,
-                      color: const Color(0xff352614),
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ],
-            ),
           ),
         ],
       ),

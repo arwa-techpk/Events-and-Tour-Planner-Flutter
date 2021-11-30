@@ -1,6 +1,13 @@
 class Plan {
-  List<PlanLocation> plans = [];
+  List<PlanDay> plans = [];
   Plan({this.plans});
+}
+class PlanDay{
+  List<PlanLocation> plans = [];
+  String title;
+  PlanDay({this.plans,this.title});
+
+  
 }
 
 class PlanLocation {

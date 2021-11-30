@@ -1,30 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:terhal/components/component_form_fields.dart';
+import 'package:terhal/components/component_sized_box.dart';
+import 'package:terhal/config/validations.dart';
+import 'package:terhal/utils/size_config.dart';
 
-class Customerservice extends StatelessWidget {
+class Customerservice extends StatefulWidget {
   Customerservice({
     Key key,
   }) : super(key: key);
+
+  @override
+  State<Customerservice> createState() => _CustomerserviceState();
+}
+
+class _CustomerserviceState extends State<Customerservice> {
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final TextEditingController _namecontroller = new TextEditingController();
+  final TextEditingController _emailPassController =
+      new TextEditingController();
+  final TextEditingController _messagecontroller = new TextEditingController();
+   Future<void> send() async {
+    final Email email = Email(
+      body: _messagecontroller.text,
+      subject: _namecontroller.text,
+      recipients: ['terhal013@gmail.com'],
+
+    );
+
+    String platformResponse;
+
+    try {
+      await FlutterEmailSender.send(email);
+      platformResponse = 'success';
+    } catch (error) {
+      platformResponse = error.toString();
+    }
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(platformResponse),
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xffffffff),
       body: Stack(
         children: <Widget>[
-          Pinned.fromPins(
-            Pin(start: 0.0, end: 0.0),
-            Pin(size: 317.0, end: 20.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50.0),
-                  topRight: Radius.circular(50.0),
-                ),
-                color: const Color(0x8056a1af),
-              ),
-            ),
-          ),
           Pinned.fromPins(
             Pin(start: 0.0, end: 0.0),
             Pin(size: 317.0, end: -27.0),
@@ -38,170 +68,125 @@ class Customerservice extends StatelessWidget {
               ),
             ),
           ),
-          Pinned.fromPins(
-            Pin(start: 0.0, end: 0.0),
-            Pin(size: 317.0, end: -2.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50.0),
-                  topRight: Radius.circular(50.0),
-                ),
-                color: const Color(0x8056a1af),
-              ),
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(size: 278.0, start: 35.0),
-            Pin(size: 56.0, start: 71.0),
-            child: Text(
-              'Contact Us ',
-              style: TextStyle(
-                fontFamily: 'Arial',
-                fontSize: 50,
-                color: const Color(0xff000000),
-                fontWeight: FontWeight.w700,
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 46.0, end: 20.0),
-            Pin(size: 37.0, middle: 0.1776),
-            child: Text(
-              'Feel free to contact us any time.\nWe will get back to you as soon as we can !',
-              style: TextStyle(
-                fontFamily: 'Arial',
-                fontSize: 16,
-                color: const Color(0xff868484),
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 46.0, end: 46.0),
-            Pin(size: 1.0, middle: 0.2805),
-            child: SvgPicture.string(
-              _svg_fi4f3p,
-              allowDrawingOutsideViewBox: true,
-              fit: BoxFit.fill,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 46.0, end: 46.0),
-            Pin(size: 1.0, middle: 0.3434),
-            child: SvgPicture.string(
-              _svg_u4csc5,
-              allowDrawingOutsideViewBox: true,
-              fit: BoxFit.fill,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 46.0, end: 46.0),
-            Pin(size: 1.0, middle: 0.4063),
-            child: SvgPicture.string(
-              _svg_uxj3rf,
-              allowDrawingOutsideViewBox: true,
-              fit: BoxFit.fill,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(size: 154.0, middle: 0.5023),
-            Pin(size: 66.0, middle: 0.4932),
-            child: Container(
-                      child: ElevatedButton(
-                              child: Text(
-                                'Send',
-                                style: TextStyle(
-                                fontSize: 30,
-                                
-                                ),
-                              ),
-                            
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xff56a1af),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)), 
-                                       ),
-                              onPressed: () {},   
-                              
-                                ),
+          Form(
+            key: _key,
+            child: Column(
+              children: [
+                ComponentSizedBox.topMargin(size: 50),
+                Text(
+                  'Contact Us ',
+                  style: TextStyle(
+                    fontFamily: 'Arial',
+                    fontSize: 50,
+                    color: const Color(0xff000000),
+                    fontWeight: FontWeight.w700,
                   ),
-          ),
-         
-          Pinned.fromPins(
-            Pin(size: 70.0, middle: 0.1),
-            Pin(size: 100.0, middle: 0.2544),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Name',
+                  textAlign: TextAlign.left,
                 ),
-              ),
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(size: 70.0, start: 40.0),
-            Pin(size: 100.0, middle: 0.3177),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextField(
-                decoration: InputDecoration(
-              border: InputBorder.none,
-                  hintText: 'e-mail',
+                ComponentSizedBox.topMargin(size: 10),
+                Text(
+                  'Feel free to contact us any time.\nWe will get back to you as soon as we can !',
+                  style: TextStyle(
+                    fontFamily: 'Arial',
+                    fontSize: 16,
+                    color: const Color(0xff868484),
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-              ),
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(size: 87.0, start: 40.0),
-            Pin(size: 100.0, middle: 0.3823),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Message',
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: FormFieldComponent.simpleFormField(
+                      hint: 'Name',
+                      validator: (value) {
+                        return Validation.validateValue(value, 'Name');
+                      },
+                      controller: _namecontroller),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: FormFieldComponent.simpleFormField(
+                    hint: 'Email',
+                    controller: _emailPassController,
+                    validator: (value) {
+                      return Validation.validateValue(value, 'Email', true);
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: FormFieldComponent.simpleFormField(
+                    hint: 'Message',
+                    controller: _messagecontroller,
+                    validator: (value) {
+                      return Validation.validateValue(value, 'Message');
+                    },
+                  ),
+                ),
+                ComponentSizedBox.topMargin(size: 10),
+                Container(
+                  child: ElevatedButton(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Send',
+                        style: TextStyle(
+                          fontSize: 30,
+                        ),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xff56a1af),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0)),
+                    ),
+                    onPressed: () {
+                      if (_key.currentState.validate()) {
+                        _key.currentState.save();
+                        send();
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-          Pinned.fromPins(
-            Pin(start: 46.0, end: 24.0),
-            Pin(size: 54.0, middle: 0.7004),
-            child: Text(
-              'Information ',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 50,
-                color: const Color(0xffffffff),
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 53.0, end: 33.0),
-            Pin(size: 107.0, end: 109.0),
-            child: Text(
-              'By e-mail: Terhal013@gmail.com\nBy phone number: 0554441888\nBy Instagram direct message: Terhal013\nBy twitter direct message: Terhal013',
-              style: TextStyle(
-                fontFamily: 'SFProText-Regular',
-                fontSize: 17,
-                color: const Color(0xffffffff),
-                letterSpacing: -0.40800000000000003,
-                height: 1.7647058823529411,
-              ),
-              textHeightBehavior:
-                  TextHeightBehavior(applyHeightToFirstAscent: false),
-              textAlign: TextAlign.left,
-            ),
-          ),
+          Positioned(
+              bottom: 50,
+              left: 50,
+              child: Container(
+                child: Column(
+                  children: [
+                    Text(
+                      'Information ',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 50,
+                        color: const Color(0xffffffff),
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      'By e-mail: Terhal013@gmail.com\nBy phone number: 0554441888\nBy Instagram direct message: Terhal013\nBy twitter direct message: Terhal013',
+                      style: TextStyle(
+                        fontFamily: 'SFProText-Regular',
+                        fontSize: 17,
+                        color: const Color(0xffffffff),
+                        letterSpacing: -0.40800000000000003,
+                        height: 1.7647058823529411,
+                      ),
+                      textHeightBehavior:
+                          TextHeightBehavior(applyHeightToFirstAscent: false),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+              ))
         ],
       ),
     );
   }
 }
+
 /*
 const Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),

@@ -10,7 +10,7 @@ class Planatrip extends StatelessWidget {
   Planatrip({
     Key key,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,49 +33,46 @@ class Planatrip extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
-          ),
-          Pinned.fromPins(
-            Pin(start: 61.0, end: 60.0),
-            Pin(size: 84.0, middle: 0.5907),
-            child: Container(
-              child: ElevatedButton(
-                child: Text(
-                  'Get a Plan',
-                  style: TextStyle(
-                    fontSize: 20,
+              ComponentSizedBox.topMargin(size: 30),
+              Container(
+                  width: 240,
+                  height: 60,
+                  child: ElevatedButton(
+                    child: Text(
+                      'Get a Plan',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xff56a1af),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40.0)),
+                    ),
+                    onPressed: () {
+                      Get.to(GetSuggestedPlanTwoScreen());
+                    },
+                  )),
+              ComponentSizedBox.topMargin(size: 30),
+              Container(
+                width: 240,
+                height: 60,
+                child: ElevatedButton(
+                  child: Text(
+                    'Make a Plan',
+                    style: TextStyle(fontSize: 20, color: Colors.black),
                   ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xffd6d6d6),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0)),
+                  ),
+                  onPressed: () {
+                    Get.to(Searchaplan());
+                  },
                 ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xff56a1af),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0)),
-                ),
-                onPressed: () {
-                  Get.to(GetSuggestedPlanTwoScreen());
-                },
               ),
-            ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 61.0, end: 60.0),
-            Pin(size: 84.0, middle: 0.7912),
-            child: Container(
-              child: ElevatedButton(
-                child: Text(
-                  'Make a Plan',
-                  style: TextStyle(fontSize: 20, color: Colors.black),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xffd6d6d6),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0)),
-                ),
-                onPressed: () {
-                  Get.to(Searchaplan());
-                },
-              ),
-            ),
+            ],
           ),
         ],
       ),

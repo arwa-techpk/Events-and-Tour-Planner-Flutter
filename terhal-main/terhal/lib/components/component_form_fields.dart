@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:terhal/config/validations.dart';
@@ -23,39 +22,81 @@ class FormFieldComponent {
     bool autoValidate = false,
   }) {
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
       child: Theme(
         data: ThemeData(
           primaryColor: ConstantColor.APP_COLOR,
           hintColor: Colors.grey,
-         
         ),
         child: TextFormField(
-          style: TextStyle(
-            fontSize:  16.0,
-            color: Colors.white
-          ),
-          
+          style: TextStyle(fontSize: 16.0, color: Colors.black),
           controller: controller,
           obscureText: isObscure,
           autovalidate: autoValidate,
           decoration: InputDecoration(
-            prefixIcon: Icon(
-              iconField,
-              color: Colors.white,
-               size: SizeConfig.getIconSize(25.0),
+            filled: true,
+            fillColor: const Color(0xffffffff),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: const Color(0xff707070), width: 2),
+              borderRadius: BorderRadius.circular(50),
             ),
-
-            
             suffixIcon: IconButton(
               icon: Icon(
                 suffixIcon,
                 color: ConstantColor.APP_COLOR,
-                 size: SizeConfig.safeBlockHorizontal*5,
+                size: SizeConfig.safeBlockHorizontal * 5,
               ),
               onPressed: onPasswordPressed,
             ),
             hintText: hint,
-            labelStyle: TextStyle(color: Colors.white,fontSize: SizeConfig.getFont(16.0)),
+            labelStyle: TextStyle(
+                color: Colors.white, fontSize: SizeConfig.getFont(16.0)),
+            hintStyle: TextStyle(fontSize: SizeConfig.getFont(16.0)),
+          ),
+          onChanged: onChange,
+          onFieldSubmitted: onSubmitted,
+          validator: validator,
+          onSaved: onSaved,
+          keyboardType: keyboardType,
+        ),
+      ),
+    );
+  }
+   static Widget simpleFormField({
+    String hint,
+    IconData iconField,
+    IconData suffixIcon,
+    Function onChange,
+    Function validator,
+    Function onSaved,
+    Function onPasswordPressed,
+    isObscure = false,
+    Function onSubmitted,
+    TextInputType keyboardType = TextInputType.text,
+    TextEditingController controller,
+    bool autoValidate = false,
+  }) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      child: Theme(
+        data: ThemeData(
+          primaryColor: ConstantColor.APP_COLOR,
+          hintColor: Colors.grey,
+        ),
+        child: TextFormField(
+          style: TextStyle(fontSize: 14.0, color: Colors.black),
+          controller: controller,
+          obscureText: isObscure,
+          autovalidate: autoValidate,
+          decoration: InputDecoration(
+           
+            
+           
+         
+            
+            hintText: hint,
+            labelStyle: TextStyle(
+                color: Colors.white, fontSize: SizeConfig.getFont(16.0)),
             hintStyle: TextStyle(fontSize: SizeConfig.getFont(16.0)),
           ),
           onChanged: onChange,

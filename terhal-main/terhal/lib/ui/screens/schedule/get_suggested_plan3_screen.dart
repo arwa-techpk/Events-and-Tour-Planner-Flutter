@@ -22,7 +22,7 @@ class GetSuggestedPlanThreeScreen extends StatefulWidget {
 
 class _GetSuggestedPlanThreeScreenState
     extends State<GetSuggestedPlanThreeScreen> {
-  DateTime startDate = DateTime.now().subtract(Duration(days: 2));
+  DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(Duration(days: 10));
   DateTime selectedDate = DateTime.now();
   List<DateTime> markedDates = [
@@ -30,12 +30,12 @@ class _GetSuggestedPlanThreeScreenState
     DateTime.now().subtract(Duration(days: 2)),
     DateTime.now().add(Duration(days: 4))
   ];
-  String selectedTime='';
-  List<PlanLocation> plans = [];
+  String selectedTime = '';
+  List<PlanDay> plans = [];
   final firestoreInstance = FirebaseFirestore.instance;
   onSelect(data) {
     selectedDate = data;
-    selectedTime =data.toString().split(' ')[0];
+    selectedTime = data.toString().split(' ')[0];
     print(selectedTime);
     print("Selected Date -> $data");
   }
@@ -47,36 +47,60 @@ class _GetSuggestedPlanThreeScreenState
   addPlan() {
     var firebaseUser = FirebaseAuth.instance.currentUser;
     Utils.showLoader();
-    firestoreInstance.collection("plans").doc(firebaseUser.uid).collection(selectedTime).doc().set({
+    firestoreInstance
+        .collection("plans")
+        .doc(firebaseUser.uid)
+        .collection(selectedTime)
+        .doc()
+        .set({
       "date": selectedDate,
       "city": 'Riyadh',
       "plan_type": widget.selectedBudget,
     }).then((_) {
-       Utils.hideLoader();
-      Get.offAll(BottomNavigation(isPlan: true,));
-       
+      Utils.hideLoader();
+      Get.offAll(BottomNavigation(
+        isPlan: true,
+      ));
+
       print("success!");
     });
   }
 
   getData() {
-    firestoreInstance
-        .collection("plan_low_riyadh_3")
-        .get()
-        .then((querySnapshot) {
+    firestoreInstance.collection("riyadh_low_3").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
         firestoreInstance
-            .collection("plan_low_riyadh_3")
+            .collection("riyadh_low_3")
             .doc(result.id)
-            .collection(ConstantString.locations)
+            .collection('days')
             .get()
             .then((querySnapshot) {
-          querySnapshot.docs.forEach((result) {
-            print(result['name']);
+          querySnapshot.docs.forEach((result1) {
+            PlanDay planDay = PlanDay(plans: [], title: result1['title']);
+
+            /*   print(result['name']);
             plans.add(PlanLocation(
                 name: result[ConstantString.name],
-                location: result[ConstantString.location]));
-            setState(() {});
+                location: result[ConstantString.location])); */
+            //setState(() {});
+            firestoreInstance
+                .collection("riyadh_low_3")
+                .doc(result.id)
+                .collection('days')
+                .doc(result1.id)
+                .collection('places')
+                .get()
+                .then((querySnapshot) {
+              querySnapshot.docs.forEach((result) {
+                print(result['name']);
+                planDay.plans.add(PlanLocation(
+                    name: result[ConstantString.name],
+                    location: result[ConstantString.location]));
+
+                setState(() {});
+              });
+              plans.add(planDay);
+            });
           });
         });
       });
@@ -151,7 +175,7 @@ class _GetSuggestedPlanThreeScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-      selectedTime=selectedDate.toString().split(' ')[0];
+    selectedTime = selectedDate.toString().split(' ')[0];
     getData();
   }
 
@@ -169,7 +193,7 @@ class _GetSuggestedPlanThreeScreenState
               color: ConstantColor.lightgrey,
               child: Column(
                 children: [
-                  ComponentSizedBox.topMargin(size: 40),
+                  ComponentSizedBox.topMargin(size: 20),
                   Row(
                     children: [
                       InkWell(
@@ -207,17 +231,20 @@ class _GetSuggestedPlanThreeScreenState
                       ],
                     ),
                   ),
-                  CalendarStrip(
-                    startDate: startDate,
-                    endDate: endDate,
-                    selectedDate: selectedDate,
-                    onDateSelected: onSelect,
-                    onWeekSelected: onWeekSelect,
-                    dateTileBuilder: dateTileBuilder,
-                    iconColor: Colors.black87,
-                    monthNameWidget: _monthNameWidget,
-                    containerDecoration: BoxDecoration(
-                      color: ConstantColor.lightgrey,
+                  Container(
+                    height: 100,
+                    child: CalendarStrip(
+                      startDate: startDate,
+                      endDate: endDate,
+                      selectedDate: selectedDate,
+                      onDateSelected: onSelect,
+                      onWeekSelected: onWeekSelect,
+                      dateTileBuilder: dateTileBuilder,
+                      iconColor: Colors.black87,
+                      monthNameWidget: _monthNameWidget,
+                      containerDecoration: BoxDecoration(
+                        color: ConstantColor.lightgrey,
+                      ),
                     ),
                   ),
                   ComponentSizedBox.topMargin(size: 20),
@@ -245,7 +272,7 @@ class _GetSuggestedPlanThreeScreenState
           Expanded(
               child: ListView.separated(
                   itemBuilder: (context, index) {
-                    return buildItemList(plans[index]);
+                    return planItem(plans[index]);
                   },
                   separatorBuilder: (context, index) {
                     return Divider(
@@ -258,71 +285,78 @@ class _GetSuggestedPlanThreeScreenState
     );
   }
 
-  Widget buildItemList(PlanLocation planLocation) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget planItem(PlanDay planDay) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 30),
-          child: RotatedBox(
-            quarterTurns: -1,
-            child: Text('11:0AM - 11:30AM'),
-          ),
+          padding: const EdgeInsets.all(16),
+          child: ComponentText.buildTextWidget(
+              title: planDay.title, fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 6),
-            height: 140,
-            width: 300,
-            decoration: BoxDecoration(
-                color: ConstantColor.medblue,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    topLeft: Radius.circular(40))),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return buildItemList(planDay.plans[index]);
+            },
+            itemCount: planDay.plans.length),
+      ],
+    );
+  }
+
+  Widget buildItemList(PlanLocation planLocation) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 6),
+        height: 140,
+        width: 300,
+        decoration: BoxDecoration(
+            color: ConstantColor.medblue,
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(40), topLeft: Radius.circular(40))),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ComponentSizedBox.topMargin(size: 20),
+              ComponentText.buildTextWidget(
+                  title: planLocation.name,
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+              ComponentSizedBox.topMargin(size: 15),
+              ComponentText.buildTextWidget(
+                title: 'Place type: Restaurant',
+                color: Colors.white,
+                fontSize: 16,
+              ),
+              ComponentSizedBox.topMargin(size: 15),
+              Row(
                 children: [
-                  ComponentSizedBox.topMargin(size: 20),
                   ComponentText.buildTextWidget(
-                      title: planLocation.name,
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                  ComponentSizedBox.topMargin(size: 15),
-                  ComponentText.buildTextWidget(
-                    title: 'Place type: Restaurant',
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                  ComponentSizedBox.topMargin(size: 15),
-                  Row(
-                    children: [
-                      ComponentText.buildTextWidget(
-                          title: 'Location',
-                          textDecoration: TextDecoration.underline,
-                          color: Color(0xff255EBA)),
-                      ComponentSizedBox.sideMargin(size: 140),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Color(0xff336C7E),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Icon(Icons.chevron_right_rounded,
-                            color: Colors.white),
-                      )
-                    ],
+                      title: 'Location',
+                      textDecoration: TextDecoration.underline,
+                      color: Color(0xff255EBA)),
+                  ComponentSizedBox.sideMargin(size: 140),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Color(0xff336C7E),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child:
+                        Icon(Icons.chevron_right_rounded, color: Colors.white),
                   )
                 ],
-              ),
-            ),
+              )
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }

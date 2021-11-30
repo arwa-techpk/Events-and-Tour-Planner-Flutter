@@ -1,23 +1,28 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:adobe_xd/page_link.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:terhal/components/component_form_fields.dart';
 import 'package:terhal/config/validations.dart';
+import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/controllers/auth/auth_service.dart';
 import 'package:terhal/utils/size_config.dart';
 import 'package:terhal/utils/utils.dart';
 
-class Restpassword extends StatefulWidget {
-  Restpassword({
+import '../pref_manager.dart';
+
+class ChangeNameScreen extends StatefulWidget {
+  ChangeNameScreen({
     Key key,
   }) : super(key: key);
 
   @override
-  State<Restpassword> createState() => _RestpasswordState();
+  State<ChangeNameScreen> createState() => _ChangeNameScreenState();
 }
 
-class _RestpasswordState extends State<Restpassword> {
+class _ChangeNameScreenState extends State<ChangeNameScreen> {
   final TextEditingController _emailcontroller = new TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   Auth auth = Auth();
@@ -33,10 +38,26 @@ class _RestpasswordState extends State<Restpassword> {
     }
   }
 
+  getUser() async {
+    _emailcontroller.text = await Get.find<PrefManager>().read('email');
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: ConstantColor.medblue,
+        title: Text('Update User Name'),
+      ),
       backgroundColor: const Color(0xffffffff),
       body: Stack(
         children: <Widget>[
@@ -80,49 +101,20 @@ class _RestpasswordState extends State<Restpassword> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Rest password ',
-                  style: TextStyle(
-                    fontFamily: 'PT Mono',
-                    fontSize: 40,
-                    color: const Color(0xff000000),
-                    letterSpacing: -0.9599998474121094,
-                    fontWeight: FontWeight.w700,
-                    height: 0.55,
-                  ),
-                  textHeightBehavior:
-                      TextHeightBehavior(applyHeightToFirstAscent: false),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  'Enter your e-mail address and we will send you\nfuther instructions on how to rest the password  ',
-                  style: TextStyle(
-                    fontFamily: 'PT Mono',
-                    fontSize: 12,
-                    color: const Color(0x96000000),
-                    letterSpacing: -0.2879999542236328,
-                    fontWeight: FontWeight.w700,
-                    height: 1.8333333333333333,
-                  ),
-                  textHeightBehavior:
-                      TextHeightBehavior(applyHeightToFirstAscent: false),
-                  textAlign: TextAlign.center,
-                ),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                     child: FormFieldComponent.formField(
-                        hint: 'Enter your e-mail',
                         controller: _emailcontroller,
                         onSaved: (val) {},
                         validator: (value) {
-                          return Validation.validateValue(value, 'Email',true);
+                          return Validation.validateValue(value, 'Name', false);
                         })),
                 Container(
                   child: ElevatedButton(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        'Send',
+                        'Update',
                         style: TextStyle(
                           fontSize: 30,
                         ),
@@ -133,10 +125,17 @@ class _RestpasswordState extends State<Restpassword> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40.0)),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_key.currentState.validate()) {
                         _key.currentState.save();
-                        resetPassword();
+                      Utils.showLoader();
+                        var firebaseUser = FirebaseAuth.instance.currentUser;
+                        await firebaseUser
+                            .updateDisplayName(_emailcontroller.text);
+                        await Get.find<PrefManager>()
+                            .save('email', _emailcontroller.text);
+                              Utils.hideLoader();
+                        Navigator.pop(context, 'ok');
                       }
                     },
                   ),

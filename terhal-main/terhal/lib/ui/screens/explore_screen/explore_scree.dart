@@ -241,7 +241,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   Widget buildImage(String urlImage, int index) => InkWell(
         onTap: () {
-          Get.to(ExploreDetailScreen());
+         
         },
         child: Container(
           margin: EdgeInsets.all(8),

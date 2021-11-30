@@ -1,11 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/constants_colors.dart';
+import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/discover_model.dart';
+import 'package:terhal/models/explore_model.dart';
 import 'package:terhal/models/plan.dart';
+
+import 'explore_detail_screen.dart';
 
 class DiscoverScreenTab extends StatefulWidget {
   String placeType;
@@ -16,7 +23,7 @@ class DiscoverScreenTab extends StatefulWidget {
 }
 
 class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
-  List<PlanLocation> plans = [];
+  List<ExploreModel> plans = [];
   final firestoreInstance = FirebaseFirestore.instance;
   List<DiscoverModel> list = [];
   final urlImages = [
@@ -37,11 +44,26 @@ class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
           querySnapshot.docs.forEach((result) {
             print(result['name']);
             plans.add(
-                PlanLocation(name: result['name'], location: result['image']));
+                ExploreModel(name: result['name'], image: result['image'],descrription: result['description']));
+                
             setState(() {});
           });
         });
       });
+    });
+  }
+   faveaPlace(ExploreModel exploreModel) {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    Utils.showLoader();
+    firestoreInstance.collection("favs").doc(firebaseUser.uid).collection(firebaseUser.uid).doc().set({
+      "name": exploreModel.name,
+      "image": exploreModel.image,
+      "description": exploreModel.descrription,
+    }).then((_) {
+       Utils.hideLoader();
+      Fluttertoast.showToast(msg: 'Place succesfully addes to favorite');
+       
+      print("success!");
     });
   }
 
@@ -80,41 +102,48 @@ class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
     );
   }
 
-  Widget item({PlanLocation discoverModel}) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(40)),
-                height: 250,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40.0),
-                    child: Image.network(
-                      discoverModel.location,
-                      fit: BoxFit.cover,
-                    )),
-              ),
-              Positioned(
-                right: 10,
-                top: 10,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.favorite_border_outlined,
-                  ),
-                  color: Colors.black,
-                  iconSize: 40,
+  Widget item({ExploreModel discoverModel}) {
+    return InkWell(
+      onTap: (){
+         Get.to(ExploreDetailScreen(exploreModel: discoverModel,));
+      },
+      child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(40)),
+                  height: 250,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40.0),
+                      child: Image.network(
+                        discoverModel.image,
+                        fit: BoxFit.cover,
+                      )),
                 ),
-              ),
-            ],
-          ),
-          ComponentSizedBox.topMargin(size: 8),
-          ComponentText.buildTextWidget(title: discoverModel.name)
-        ],
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: IconButton(
+                    onPressed: () {
+                      faveaPlace(discoverModel);
+                    },
+                    icon: const Icon(
+                      Icons.favorite_border_outlined,
+                    ),
+                    color: Colors.black,
+                    iconSize: 40,
+                  ),
+                ),
+              ],
+            ),
+            ComponentSizedBox.topMargin(size: 8),
+            ComponentText.buildTextWidget(title: discoverModel.name)
+          ],
+        ),
       ),
     );
   }

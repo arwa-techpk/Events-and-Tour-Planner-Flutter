@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:get/get.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/models/discover_model.dart';
+import 'package:terhal/models/explore_model.dart';
+import 'package:terhal/ui/screens/explore_screen/explore_detail_screen.dart';
 
 class FavoriteScreen extends StatefulWidget {
   const FavoriteScreen({Key key}) : super(key: key);
@@ -13,6 +18,7 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
+  final firestoreInstance = FirebaseFirestore.instance;
   List<DiscoverModel> list = [];
   final urlImages = [
     'https://images.skyscrapercenter.com/building/kingdom-centre_omrania-associates2.jpg',
@@ -21,10 +27,12 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
     'https://farm4.static.flickr.com/3020/2989619669_a3f776497f.jpg',
   ];
 
+  List<ExploreModel> exploreList = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
     list.add(DiscoverModel(
         title: 'Kingdom tower', image: urlImages[0], isFav: false));
     list.add(
@@ -35,47 +43,85 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         DiscoverModel(title: 'Madain Saleh', image: urlImages[3], isFav: true));
   }
 
+  getData() {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    firestoreInstance.collection("favs").doc(firebaseUser.uid).collection(firebaseUser.uid). get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+          exploreList.add(ExploreModel(
+                name: result['name'],
+                image: result['image'],
+                descrription: result['description']));
+
+            setState(() {});
+       /*  firestoreInstance
+            .collection("favs")
+            .doc(result.id)
+            .collection(firebaseUser.uid)
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((result) {
+            print('object');
+            print(result['name']);
+            exploreList.add(ExploreModel(
+                name: result['name'],
+                image: result['image'],
+                descrription: result['description']));
+
+            setState(() {});
+          });
+        }); */
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
-      
-        title: Text('Favorite'),),
+        title: Text('Favorite'),
+      ),
       body: StaggeredGridView.countBuilder(
           staggeredTileBuilder: (int index) => new StaggeredTile.fit(1),
           crossAxisCount: 2,
-          itemCount: list.length,
+          itemCount: exploreList.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            return item(discoverModel: list[index]);
+            return item(discoverModel: exploreList[index]);
           }),
     );
   }
 
-  Widget item({DiscoverModel discoverModel}) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(40)),
-                height: 250,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(40.0),
-                    child: Image.network(
-                      discoverModel.image,
-                      fit: BoxFit.cover,
-                    )),
-              )
-            ],
-          ),
-          ComponentSizedBox.topMargin(size: 8),
-          ComponentText.buildTextWidget(title: discoverModel.title)
-        ],
+  Widget item({ExploreModel discoverModel}) {
+    return InkWell(
+      onTap: () {
+        Get.to(ExploreDetailScreen(
+          exploreModel: discoverModel,
+        ));
+      },
+      child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(40)),
+                  height: 250,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40.0),
+                      child: Image.network(
+                        discoverModel.image,
+                        fit: BoxFit.cover,
+                      )),
+                )
+              ],
+            ),
+            ComponentSizedBox.topMargin(size: 8),
+            ComponentText.buildTextWidget(title: discoverModel.name)
+          ],
+        ),
       ),
     );
   }

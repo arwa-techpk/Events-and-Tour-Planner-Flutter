@@ -49,6 +49,7 @@ dependencies:
   shared_preferences: ^0.5.6+3
 
   flutter_datetime_picker: ^1.5.1
+  flutter_email_sender: ^5.0.2
 
   
 

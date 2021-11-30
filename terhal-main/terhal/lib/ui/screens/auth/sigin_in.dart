@@ -5,11 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:terhal/common_widgets/validators.dart';
 import 'package:terhal/components/bottom_navigation.dart';
+import 'package:terhal/components/component_form_fields.dart';
+import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/controllers/auth/auth_service.dart';
 import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/ui/screens/auth/profile.dart';
 import 'package:terhal/ui/screens/auth/reset_password.dart';
 import 'package:terhal/ui/screens/home_screen.dart';
+import 'package:terhal/utils/size_config.dart';
 
 enum SigninType { signin, register }
 
@@ -23,11 +26,15 @@ class SignIn extends StatefulWidget with EmailAndPasswordValidators {
 
 class _SignInState extends State<SignIn> {
   final TextEditingController _emailcontroller = new TextEditingController();
+   final TextEditingController _reEnetrPassController = new TextEditingController();
+    final TextEditingController _namecontroller = new TextEditingController();
   final TextEditingController _passwordcontroller = new TextEditingController();
   Auth auth = Auth();
 
   String get _email => _emailcontroller.text;
   String get _password => _passwordcontroller.text;
+  
+  String get _name=> _namecontroller.text;
 
   bool _submitted = false;
   bool _isLoading = false;
@@ -42,8 +49,10 @@ class _SignInState extends State<SignIn> {
     _emailcontroller.clear();
     _passwordcontroller.clear();
   }
-
+final GlobalKey<FormState> _key = GlobalKey<FormState>();
   void _submit() async {
+     if (_key.currentState.validate()) {
+      _key.currentState.save();
     setState(() {
       _submitted = true;
       _isLoading = true;
@@ -53,7 +62,7 @@ class _SignInState extends State<SignIn> {
       if (_formType == SigninType.signin) {
         await auth.signInWithEmailAndPassword(_email, _password);
       } else {
-        await auth.createUserWithEmailAndPassword(_email, _password);
+        await auth.createUserWithEmailAndPassword(_email, _password,_name);
       }
       Utils.hideLoader();
       Get.offAll(BottomNavigation());
@@ -81,10 +90,12 @@ class _SignInState extends State<SignIn> {
         _isLoading = false;
       });
     }
+     }
   }
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     final primaryText = _formType == SigninType.signin ? 'Sign in' : 'Sign up';
     final secondaryText = _formType == SigninType.signin
         ? 'Need an account? Register'
@@ -92,8 +103,7 @@ class _SignInState extends State<SignIn> {
     bool submitEnabled = widget.emailValidator.isValid(_email) &&
         widget.passwordValidator.isValid(_password) &&
         !_isLoading;
-    bool emailShowErrorText =
-        _submitted && !widget.emailValidator.isValid(_email);
+   
     bool passwordShowErrorText =
         _submitted && !widget.passwordValidator.isValid(_password);
 
@@ -130,19 +140,6 @@ class _SignInState extends State<SignIn> {
             ),
           ),
           Pinned.fromPins(
-              Pin(start: 26.0, end: 9.0), Pin(size: 39.0, middle: 0.803),
-              child: TextButton(
-                onPressed: !_isLoading ? _toggleFormType : null,
-                style: TextButton.styleFrom(
-                  primary: const Color(0xff56a1af),
-                ),
-                child: Text(
-                  secondaryText,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w700),
-                ),
-              )),
-          Pinned.fromPins(
             Pin(start: -38.7, end: 0.0),
             Pin(size: 229.4, start: -38.2),
             child: SvgPicture.string(
@@ -169,135 +166,180 @@ class _SignInState extends State<SignIn> {
               fit: BoxFit.fill,
             ),
           ),
-          Pinned.fromPins(
-            Pin(start: 38.0, end: 38.0),
-            Pin(size: 45.0, middle: 0.3272),
+          SingleChildScrollView(
             child: Container(
-                child: TextField(
-              controller: _emailcontroller,
-              textAlignVertical: TextAlignVertical.bottom,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: const Color(0xffffffff),
-                border: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: const Color(0xff707070), width: 2),
-                  borderRadius: BorderRadius.circular(50),
+              margin: EdgeInsets.only(top: 120),
+              child: Form(
+                key: _key,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    FormFieldComponent.formField(hint: 'Email',
+                     controller: _emailcontroller,
+                    onSaved: (val){},validator: (value){
+                      return Validation.validateValue(value, 'Email',true);
+              
+                    }),
+                    ComponentSizedBox.topMargin(size: 10),
+              
+                      FormFieldComponent.formField(hint: 'Password',
+                       controller: _passwordcontroller,
+                       isObscure: true,
+                    onSaved: (val){},validator: (val){
+                      return Validation.validatePassStructure(val,'Password');
+                      
+                    }),
+                    ComponentSizedBox.topMargin(size: 10),
+                   _formType == SigninType.register?   FormFieldComponent.formField(hint: 'Re-Enter Password',
+                       controller: _reEnetrPassController,
+                       isObscure: true,
+                    onSaved: (val){},validator: (val){
+
+                      if(_passwordcontroller.text !=val){
+                        return 'Password doesn\'t match'; 
+                      }else{
+                        return null;
+                      }
+                      
+                    }):Container(),
+                    ComponentSizedBox.topMargin(size: 10),
+                    _formType == SigninType.register?  FormFieldComponent.formField(hint: 'Name',
+                       controller: _namecontroller,
+                       isObscure: false,
+                    onSaved: (val){},validator: (val){
+                      return Validation.validateValue(val,'Name');
+                      
+                    }):Container(),
+                   /*  Container(
+                      height: 65,
+                      padding: EdgeInsets.all(8),
+                        child: TextField(
+                      controller: _emailcontroller,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color(0xffffffff),
+                        border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: const Color(0xff707070), width: 2),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        hintText: 'Email',
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                        ),
+                        errorText:
+                            emailShowErrorText ? widget.invalidEmailErrorText : null,
+                        enabled: _isLoading == false,
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      onChanged: (password) => _updateState(),
+                    )),
+                    
+                    Container(
+                       height: 65,
+                      padding: EdgeInsets.all(8),
+                        child: TextField(
+                      controller: _passwordcontroller,
+                      textAlignVertical: TextAlignVertical.bottom,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xffffffff),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xff707070), width: 2),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        hintText: 'Password',
+                        hintStyle: const TextStyle(
+                          fontSize: 16,
+                        ),
+                        errorText: passwordShowErrorText
+                            ? widget.invalidPasswordErrorText
+                            : null,
+                       
+                      ),
+                      obscureText: true,
+                      keyboardType: TextInputType.url,
+                      onChanged: (password) => _updateState(),
+                    )), */
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text.rich(
+                          TextSpan(
+                            style: TextStyle(
+                              fontFamily: 'InaiMathi',
+                              fontSize: 16,
+                              color: Color(0xff707070),
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Forgot password? ',
+                              ),
+                            ],
+                          ),
+                          textHeightBehavior:
+                              TextHeightBehavior(applyHeightToFirstAscent: false),
+                          textAlign: TextAlign.left,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Get.to(Restpassword());
+                          },
+                          style: TextButton.styleFrom(
+                            primary: Color(0xff56a1af),
+                          ),
+                          child: const Text(
+                            'Rest Password',
+                            style:
+                                TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                          ),
+                        )
+                      ],
+                    ),
+                    Container(
+                      height: 50,
+                     
+                      child: ElevatedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            primaryText,
+                            style: const TextStyle(
+                              fontSize: 24,
+                            ),
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xff56a1af),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40.0)),
+                        ),
+                        onPressed: () {
+                          // if (primaryText == 'Sign in') {
+                          _submit();
+                          //  Get.to(BottomNavigation());
+                          //}
+                        },
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: !_isLoading ? _toggleFormType : null,
+                      style: TextButton.styleFrom(
+                        primary: const Color(0xff56a1af),
+                      ),
+                      child: Text(
+                        secondaryText,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w700),
+                      ),
+                    )
+                  ],
                 ),
-                hintText: 'Email',
-                hintStyle: TextStyle(
-                  fontSize: 20,
-                ),
-                errorText:
-                    emailShowErrorText ? widget.invalidEmailErrorText : null,
-                enabled: _isLoading == false,
-              ),
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (password) => _updateState(),
-            )),
-          ),
-          Pinned.fromPins(
-            Pin(start: 38.0, end: 38.0),
-            Pin(size: 45.0, middle: 0.4316),
-            child: Container(
-                child: TextField(
-                  
-              controller: _passwordcontroller,
-              textAlignVertical: TextAlignVertical.bottom,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Color(0xffffffff),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xff707070), width: 2),
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                hintText: 'Password',
-                hintStyle: const TextStyle(
-                  fontSize: 20,
-                ),
-                errorText: passwordShowErrorText
-                    ? widget.invalidPasswordErrorText
-                    : null,
-                enabled: _isLoading == false,
-              ),
-              obscureText: true,
-              keyboardType: TextInputType.url,
-              onChanged: (password) => _updateState(),
-            )),
-          ),
-          Pinned.fromPins(
-            Pin(size: 154.0, middle: 0.5023),
-            Pin(size: 66.0, middle: 0.6113),
-            child: Container(
-              child: ElevatedButton(
-                child: Text(
-                  primaryText,
-                  style: const TextStyle(
-                    fontSize: 30,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xff56a1af),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0)),
-                ),
-                onPressed: () {
-                  // if (primaryText == 'Sign in') {
-                  _submit();
-                  //  Get.to(BottomNavigation());
-                  //}
-                },
               ),
             ),
-          ),
-          Pinned.fromPins(
-            Pin(start: 37.0, end: 7.0),
-            Pin(size: 28.0, middle: 0.5005),
-            child: const Text.rich(
-              TextSpan(
-                style: TextStyle(
-                  fontFamily: 'InaiMathi',
-                  fontSize: 20,
-                  color: Color(0xff707070),
-                ),
-                children: [
-                  TextSpan(
-                    text: 'Forgot password? ',
-                  ),
-                ],
-              ),
-              textHeightBehavior:
-                  TextHeightBehavior(applyHeightToFirstAscent: false),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Pinned.fromPins(
-              Pin(start: 177.0, end: 0.040), Pin(size: 39.0, middle: 0.498000),
-              child: TextButton(
-                onPressed: () {
-                  Get.to(Restpassword());
-                },
-                style: TextButton.styleFrom(
-                  primary: Color(0xff56a1af),
-                ),
-                child: const Text(
-                  'Rest Password',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                ),
-              )),
-          Pinned.fromPins(
-            Pin(size: 120.0, start: 51.0),
-            Pin(size: 50.0, middle: 0.2428),
-            child: const Text(
-              'Hello! ',
-              style: TextStyle(
-                fontFamily: 'InaiMathi',
-                fontSize: 40,
-                color: Color(0xff000000),
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
+          )
         ],
       ),
     );

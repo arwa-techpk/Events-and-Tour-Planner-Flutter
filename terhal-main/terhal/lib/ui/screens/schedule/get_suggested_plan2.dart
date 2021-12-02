@@ -25,26 +25,16 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+        backgroundColor: ConstantColor.medblue,
+        title: Text('Plan Trip'),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ComponentText.buildTextWidget(
-                          title: '< Plan Trip',
-                          color: Colors.blue,
-                          fontSize: 18,
-                          textAlign: TextAlign.left),
-                    )),
-              ),
-              ComponentSizedBox.topMargin(size: 20),
+          children: [
+            
+              ComponentSizedBox.topMargin(size: 10),
               ComponentText.buildTextWidget(
                   title: 'Budget', fontSize: 26, fontWeight: FontWeight.bold),
               ComponentSizedBox.topMargin(size: 20),
@@ -222,10 +212,9 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                             style: TextStyle(color: Colors.white),
                             iconEnabledColor: Colors.black,
                             items: <String>[
-                              'Riyad',
+                              'Riyadh',
+                              'Al Khobar',
                               'Jeddah',
-                              'Madina',
-                              'Makka',
                             ].map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,

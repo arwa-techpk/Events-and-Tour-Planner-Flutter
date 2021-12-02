@@ -67,15 +67,17 @@ class _GetSuggestedPlanThreeScreenState
   }
 
   getData() {
-    firestoreInstance.collection("riyadh_low_3").get().then((querySnapshot) {
+
+    firestoreInstance.collection("Riyadh_low_3").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
         firestoreInstance
-            .collection("riyadh_low_3")
+            .collection("Riyadh_low_3")
             .doc(result.id)
-            .collection('days')
+            .collection('Days')
             .get()
             .then((querySnapshot) {
           querySnapshot.docs.forEach((result1) {
+            print( result1['title']);
             PlanDay planDay = PlanDay(plans: [], title: result1['title']);
 
             /*   print(result['name']);
@@ -84,18 +86,19 @@ class _GetSuggestedPlanThreeScreenState
                 location: result[ConstantString.location])); */
             //setState(() {});
             firestoreInstance
-                .collection("riyadh_low_3")
+                .collection("Riyadh_low_3")
                 .doc(result.id)
-                .collection('days')
+                .collection('Days')
                 .doc(result1.id)
                 .collection('places')
                 .get()
                 .then((querySnapshot) {
-              querySnapshot.docs.forEach((result) {
-                print(result['name']);
+              querySnapshot.docs.forEach((result3) {
+              print(result3 ['name']);
+                
                 planDay.plans.add(PlanLocation(
-                    name: result[ConstantString.name],
-                    location: result[ConstantString.location]));
+                    name: result3[ConstantString.name],
+                  )); 
 
                 setState(() {});
               });

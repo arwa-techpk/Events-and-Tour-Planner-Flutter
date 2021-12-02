@@ -4,6 +4,7 @@ import 'package:adobe_xd/page_link.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:terhal/components/component_form_fields.dart';
 import 'package:terhal/config/validations.dart';
+import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/controllers/auth/auth_service.dart';
 import 'package:terhal/utils/size_config.dart';
 import 'package:terhal/utils/utils.dart';
@@ -37,6 +38,11 @@ class _RestpasswordState extends State<Restpassword> {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
+        appBar: AppBar(
+        backgroundColor: ConstantColor.medblue,
+        title: Text('Reset Password'),
+      ),
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xffffffff),
       body: Stack(
         children: <Widget>[
@@ -80,20 +86,8 @@ class _RestpasswordState extends State<Restpassword> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Rest password ',
-                  style: TextStyle(
-                    fontFamily: 'PT Mono',
-                    fontSize: 40,
-                    color: const Color(0xff000000),
-                    letterSpacing: -0.9599998474121094,
-                    fontWeight: FontWeight.w700,
-                    height: 0.55,
-                  ),
-                  textHeightBehavior:
-                      TextHeightBehavior(applyHeightToFirstAscent: false),
-                  textAlign: TextAlign.center,
-                ),
+               
+               
                 Text(
                   'Enter your e-mail address and we will send you\nfuther instructions on how to rest the password  ',
                   style: TextStyle(

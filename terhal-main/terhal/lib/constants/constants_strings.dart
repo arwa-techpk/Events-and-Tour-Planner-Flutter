@@ -18,7 +18,7 @@ class ConstantString {
   static const String plan_high_riyadh_7 = "plan_high_riyadh_7";
 
   static const String name = "name";
-  static const String location = "location";
+  static const String location = "Location";
 
   static const String locations= "locations";
 

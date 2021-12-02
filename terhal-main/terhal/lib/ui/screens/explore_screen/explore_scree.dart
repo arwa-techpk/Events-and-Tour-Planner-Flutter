@@ -4,14 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:string_to_hex/string_to_hex.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/const_images_paths.dart';
 import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/helpers/utils.dart';
+import 'package:terhal/models/weather_model.dart';
 import 'package:terhal/ui/screens/explore_screen/discover_screen.dart';
 import 'package:terhal/ui/screens/explore_screen/explore_detail_screen.dart';
 import 'package:terhal/ui/screens/schedule/make_a_plan1_screen.dart';
+import 'package:terhal/utils/data_service.dart';
 import 'package:weather_icons/weather_icons.dart' as icon;
 import 'package:weather_icons/weather_icons.dart';
 
@@ -30,31 +33,57 @@ class _ExploreScreenState extends State<ExploreScreen> {
     'https://farm4.static.flickr.com/3020/2989619669_a3f776497f.jpg',
   ];
   int activeIndex = 0;
+  final String _City = 'Riyadh';
+  final _dataService = DataService();
+
+  Weather _response;
+
   var tmp = '\u00B0';
-    final firestoreInstance = FirebaseFirestore.instance;
- void searchPlace({String slug}) {
+  var weatherIcon;
+  final firestoreInstance = FirebaseFirestore.instance;
+  void searchPlace({String slug}) {
     Utils.showLoader();
-    bool isfound=false;
+    bool isfound = false;
     firestoreInstance.collection("places").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
-        
         if (slug.toLowerCase() == result['name'].toString().toLowerCase()) {
-          isfound=true;
+          isfound = true;
           Utils.hideLoader();
           Get.to(MakeAPlanOneScreen(
             placeName: result['name'],
           ));
-         
         }
       });
-      if(!isfound){
-      Fluttertoast.showToast(msg: 'No place Found');
+      if (!isfound) {
+        Fluttertoast.showToast(msg: 'No place Found');
       }
       Utils.hideLoader();
     });
   }
+
+  String temprature = 'fetching';
+
   TextEditingController _controller = TextEditingController();
   String slug = '';
+  void _getWeather() async {
+    final response = await _dataService.getWeather(_City);
+    setState(() => _response = response);
+
+    setState(() {
+      if (_response != null) {
+        temprature = _response.main.temp.toString();
+        weatherIcon = _response.weather[0].icon;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getWeather();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +115,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         ],
                       ),
                       Container(
-                        width: 140,
+                        width: 150,
                         child: Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
@@ -105,7 +134,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     color: Colors.white),
                                 ComponentSizedBox.topMargin(size: 4),
                                 ComponentText.buildTextWidget(
-                                    title: '38$tmp',
+                                    title: '$temprature$tmp',
                                     fontWeight: FontWeight.normal,
                                     fontSize: 16,
                                     color: Colors.white),
@@ -114,15 +143,28 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    ComponentText.buildTextWidget(
-                                        title: 'Mostly\nSunny',
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 14,
-                                        color: Colors.white),
-                                    const Icon(
-                                      icon.WeatherIcons.day_sunny,
-                                      color: Colors.yellow,
-                                    )
+                                    Container(
+                                      width: 65,
+                                      child: ComponentText.buildTextWidget(
+                                          title: _response != null
+                                              ? '${_response.weather[0].description}'
+                                              : '',
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 14,
+                                          maxLines: 3,
+                                          color: Colors.white),
+                                    ),
+                                       /* ComponentText.buildTextWidget(
+                                          title:_response!=null? '${int.parse(weatherIcon,radix:16)}':'',
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 14,
+                                          maxLines: 3,
+                                          color: Colors.white), */
+                                     weatherIcon!=null?     Image.network('https://openweathermap.org/img/wn/$weatherIcon@2x.png',width: 35,):Container()
+                                      
+                                /*  weatherIcon!=null?   const Icon(IconData(
+                                      0x04d,
+                                    )):Container(), */
                                   ],
                                 )
                               ],
@@ -198,12 +240,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   Widget exploreType({String title, String icon}) {
     return InkWell(
-      onTap: (){
-       
-        Get.to(DiscoverScreenTab(placeType: title,));
+      onTap: () {
+        Get.to(DiscoverScreenTab(
+          placeType: title,
+        ));
       },
       child: Container(
-      
         height: 100,
         child: Column(
           children: [
@@ -240,9 +282,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget buildImage(String urlImage, int index) => InkWell(
-        onTap: () {
-         
-        },
+        onTap: () {},
         child: Container(
           margin: EdgeInsets.all(8),
           decoration: BoxDecoration(
@@ -316,12 +356,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
               color: Colors.black,
             ),
             onPressed: () {
-             
-             _controller.clear();
+              _controller.clear();
               setState(() {
                 slug = '';
               });
-
             },
           ),
         ),
@@ -331,8 +369,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
             color: Colors.black,
           ),
           onPressed: () {
-             searchPlace(slug:_controller.text );
-           // Get.to(DiscoverScreen());
+            searchPlace(slug: _controller.text);
+            // Get.to(DiscoverScreen());
             // if (slug.length > 0)
 
             FocusScope.of(context).requestFocus(new FocusNode());

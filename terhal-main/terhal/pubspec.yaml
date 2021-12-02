@@ -50,6 +50,8 @@ dependencies:
 
   flutter_datetime_picker: ^1.5.1
   flutter_email_sender: ^5.0.2
+  http: ^0.13.4
+  string_to_hex: ^0.2.2
 
   
 

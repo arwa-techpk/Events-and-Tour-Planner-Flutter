@@ -21,25 +21,25 @@ class ConstantString {
   static const String Jeddah_medium_3 = "Jeddah_medium_3";
   static const String Jeddah_high_3 = "Jeddah_high_3";
 
-  static const String Jeddah_low_5 = "Jeddah_low_3";
+  static const String Jeddah_low_5 = "Jeddah_low_5";
   static const String Jeddah_medium_5 = "Jeddah_medium_5";
-  static const String Jeddah_high_5 = "Jeddah_high_3";
+  static const String Jeddah_high_5 = "Jeddah_high_5";
 
-  static const String Jeddah_low_7 = "Jeddah_low_3";
+  static const String Jeddah_low_7 = "Jeddah_low_7";
   static const String Jeddah_medium_7 = "Jeddah_medium_7";
-  static const String Jeddah_high_7 = "Jeddah_high_3";
+  static const String Jeddah_high_7 = "Jeddah_high_7";
 
   static const String JAlkhobar_low_3 = "Alkhobar_low_3";
   static const String Alkhobar_medium_3 = "Alkhobar_medium_3";
   static const String Alkhobar_high_3 = "Alkhobar_high_3";
 
-  static const String Alkhobar_low_5 = "Alkhobar_low_3";
+  static const String Alkhobar_low_5 = "Alkhobar_low_5";
   static const String Alkhobar_medium_5 = "Alkhobar_medium_5";
-  static const String Alkhobar_high_5 = "Alkhobar_high_3";
+  static const String Alkhobar_high_5 = "Alkhobar_high_5";
 
-  static const String Alkhobar_low_7 = "Alkhobar_low_3";
+  static const String Alkhobar_low_7 = "Alkhobar_low_7";
   static const String Alkhobar_medium_7 = "Alkhobar_medium_7";
-  static const String Alkhobar_high_7 = "Alkhobar_high_3";
+  static const String Alkhobar_high_7 = "Alkhobar_high_7";
 
   static const String low_3 = "low_3";
   static const String medium_3 = "medium_3";

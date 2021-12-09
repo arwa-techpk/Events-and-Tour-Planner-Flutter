@@ -128,7 +128,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 ComponentText.buildTextWidget(
-                                    title: 'Riyad',
+                                    title: 'Riyadh',
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
                                     color: Colors.white),

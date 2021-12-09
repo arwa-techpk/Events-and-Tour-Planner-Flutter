@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:terhal/components/component_form_fields.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/config/validations.dart';
+import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/utils/size_config.dart';
 
 class Customerservice extends StatefulWidget {
@@ -51,6 +52,9 @@ class _CustomerserviceState extends State<Customerservice> {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: ConstantColor.medblue,
+      ),
       resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xffffffff),
       body: Stack(

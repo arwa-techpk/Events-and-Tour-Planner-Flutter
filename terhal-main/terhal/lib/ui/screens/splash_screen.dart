@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:terhal/components/bottom_navigation.dart';
+import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/constants/constants_strings.dart';
@@ -148,18 +149,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       fit: BoxFit.fill,
                     ),
                   ),
-                  Pinned.fromPins(
-                    Pin(size: 317.0, middle: 0.571),
-                    Pin(size: 186.0, middle: 0.12066),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: new AssetImage('image/images/logo.png'),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                  ),
+                  
                   Pinned.fromPins(
                     Pin(size: 154.0, middle: 0.4311),
                     Pin(size: 66.0, middle: 0.4864),
@@ -170,22 +160,35 @@ class _SplashScreenState extends State<SplashScreen> {
       
       
       
-                  Pinned.fromPins(
-                    Pin(size: 278.0, middle: 0.5678),
-                    Pin(size: 26.0, middle: 0.3965),
-                    child: Text(
-                      'Welcome back to your World! ',
-                      style: TextStyle(
-                        fontFamily: 'Kailasa',
-                        fontSize: 20,
-                        color: const Color(0xff352614),
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
                 ],
               ),
             ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 50,left: 16),
+                  child: Image.asset('image/images/logo.png',width: 240,),
+                      
+                      ),
+
+                      
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                        'Welcome back to your World! ',
+                        style: TextStyle(
+                          fontFamily: 'Kailasa',
+                          fontSize: 20,
+                          color: const Color(0xff352614),
+                        ),
+                        textAlign: TextAlign.left,
+                    ),
+                      ),
+
+              ],
+            )
           ],
         )),
       ));

@@ -84,6 +84,7 @@ class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.placeType);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,

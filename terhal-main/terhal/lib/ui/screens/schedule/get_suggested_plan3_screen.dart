@@ -325,12 +325,8 @@ class _GetSuggestedPlanThreeScreenState
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
               ComponentSizedBox.topMargin(size: 15),
-              ComponentText.buildTextWidget(
-                title: 'Place type: Restaurant',
-                color: Colors.white,
-                fontSize: 16,
-              ),
-              ComponentSizedBox.topMargin(size: 15),
+              
+             
               Row(
                 children: [
                   InkWell(
@@ -343,16 +339,7 @@ class _GetSuggestedPlanThreeScreenState
                         color: Color(0xff255EBA)),
                   ),
                   ComponentSizedBox.sideMargin(size: 140),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Color(0xff336C7E),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child:
-                        Icon(Icons.chevron_right_rounded, color: Colors.white),
-                  )
+                 
                 ],
               )
             ],

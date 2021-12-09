@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:terhal/components/component_form_fields.dart';
+import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/ui/screens/explore_screen/discover_screen.dart';
 import 'package:terhal/ui/screens/schedule/make_a_plan1_screen.dart';
 import 'package:terhal/utils/size_config.dart';
@@ -34,6 +35,7 @@ class _SearchaplanState extends State<Searchaplan> {
           Utils.hideLoader();
           Get.to(MakeAPlanOneScreen(
             placeName: result['name'],
+            placeLocation: result['location'],
           ));
          
         }
@@ -49,6 +51,10 @@ class _SearchaplanState extends State<Searchaplan> {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
+       appBar: AppBar(
+        backgroundColor: ConstantColor.medblue,
+      ),
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xffffffff),
       body: Stack(
         children: <Widget>[
@@ -93,9 +99,9 @@ class _SearchaplanState extends State<Searchaplan> {
               Container(
                 child: Image.asset(
                   'image/images/riyadhView.jpg',
-                  height: 350,
+                  height: 250,
                   width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
               Padding(
@@ -146,13 +152,12 @@ class _SearchaplanState extends State<Searchaplan> {
   Widget buildSearchWidget(BuildContext context) {
     return Container(
       height: 70,
-      child: AppBar(
-        brightness: Brightness.light,
-        elevation: 0.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(60.0),
-            side: BorderSide(width: 1.0, color: Colors.black)),
+      child: FormFieldComponent.formField(hint: 'Search',  controller: _controller,));
+      /* AppBar(
         backgroundColor: Colors.white,
+       automaticallyImplyLeading: false,
+        elevation: 0.0,
+      
         leadingWidth: 0.0,
         /*  leading: InkWell(
                           onTap: () {
@@ -190,7 +195,7 @@ class _SearchaplanState extends State<Searchaplan> {
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 18)),
             ),
           ),
-        ),
+        ), */
         /* actions: <Widget>[
           Visibility(
             visible: slug != null && slug.isNotEmpty,
@@ -223,8 +228,8 @@ class _SearchaplanState extends State<Searchaplan> {
             },
           ),
         ], */
-      ),
-    );
+     // ),
+   //);
   }
 }
 

@@ -36,10 +36,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   onSelect(data) {
     selectedDate = data;
     selectedTime = data.toString().split(' ')[0];
-    setState(() {
-      
-    });
-    plans=[];
+    setState(() {});
+    plans = [];
     getData();
     print("Selected Date -> $data");
   }
@@ -72,19 +70,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         .doc(firebaseUser.uid)
         .get()
         .then((value) {
-          firestoreInstance
-            .collection("plans")
-            .doc(firebaseUser.uid)
-            .collection(selectedTime)
-            .get()
-            .then((querySnapshot) {
-          querySnapshot.docs.forEach((result) {
-             plans.add(PlanLocation(name: result['city'],planType: result['plan_type']));
-              //plans.add(PlanLocation(planType: result['plan_type']));
-            setState(() {});
-          });
-        }); 
-      
+      firestoreInstance
+          .collection("plans")
+          .doc(firebaseUser.uid)
+          .collection(selectedTime)
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          plans.add(PlanLocation(
+              name: result['city'], planType: result['plan_type']));
+          //plans.add(PlanLocation(planType: result['plan_type']));
+          setState(() {});
+        });
+      });
     });
     /* firestoreInstance.collection("plans").doc().get().then((querySnapshot) {
       /*  querySnapshot.docs.forEach((result) {
@@ -128,9 +126,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       });
     }); */
   }
+
   void _launchURL(String url) async {
-  if (!await launch(url)) throw 'Could not launch $url';
-}
+    if (!await launch(url)) throw 'Could not launch $url';
+  }
 
   _monthNameWidget(monthName) {
     return Container(
@@ -220,22 +219,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               child: Column(
                 children: [
                   ComponentSizedBox.topMargin(size: 40),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Icon(
-                          Icons.chevron_left,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      ComponentText.buildTextWidget(
-                          title: 'Plan Trip', color: Colors.blue)
-                    ],
-                  ),
-                  ComponentSizedBox.topMargin(size: 20),
                   Container(
                     child: Column(
                       children: [],
@@ -330,17 +313,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
                   ComponentSizedBox.topMargin(size: 15),
-                  ComponentText.buildTextWidget(
-                    title: 'Place type: Restaurant',
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                  ComponentSizedBox.topMargin(size: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(),
-                     /*  InkWell(
+                      /*  InkWell(
                         onTap: (){
                           _launchURL(planLocation.location);
                         },
@@ -349,25 +326,28 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             textDecoration: TextDecoration.underline,
                             color: Color(0xff255EBA)),
                       ), */
-                    
-                      InkWell(
-                        onTap: (){
-                          if(planLocation.planType!=null && planLocation.planType.isNotEmpty){
-                          Get.to(ScheduleDetail(selectedBudget: planLocation.planType,));
-                          }
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          margin: EdgeInsets.only(right: 20),
-                          decoration: BoxDecoration(
-                            color: Color(0xff336C7E),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(Icons.chevron_right_rounded,
-                              color: Colors.white),
-                        ),
-                      )
+
+                      planLocation.planType != null &&
+                              planLocation.planType.isNotEmpty
+                          ? InkWell(
+                              onTap: () {
+                                Get.to(ScheduleDetail(
+                                  selectedBudget: planLocation.planType,
+                                ));
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                margin: EdgeInsets.only(right: 20),
+                                decoration: BoxDecoration(
+                                  color: Color(0xff336C7E),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(Icons.chevron_right_rounded,
+                                    color: Colors.white),
+                              ),
+                            )
+                          : Container(),
                     ],
                   )
                 ],

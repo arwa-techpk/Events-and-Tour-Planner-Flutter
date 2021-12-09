@@ -44,7 +44,7 @@ class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
           querySnapshot.docs.forEach((result) {
             print(result['name']);
             plans.add(
-                ExploreModel(name: result['name'], image: result['image'],descrription: result['description']));
+                ExploreModel(name: result['name'], image: result['image'],descrription: result['description'],id: result.id));
                 
             setState(() {});
           });
@@ -55,7 +55,7 @@ class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
    faveaPlace(ExploreModel exploreModel) {
     var firebaseUser = FirebaseAuth.instance.currentUser;
     Utils.showLoader();
-    firestoreInstance.collection("favs").doc(firebaseUser.uid).collection(firebaseUser.uid).doc().set({
+    firestoreInstance.collection("favs").doc(firebaseUser.uid).collection(firebaseUser.uid).doc(exploreModel.id).set({
       "name": exploreModel.name,
       "image": exploreModel.image,
       "description": exploreModel.descrription,

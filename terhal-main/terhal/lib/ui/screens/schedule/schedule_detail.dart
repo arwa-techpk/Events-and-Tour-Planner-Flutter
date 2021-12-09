@@ -13,17 +13,14 @@ import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/plan.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class GetSuggestedPlanThreeScreen extends StatefulWidget {
+class ScheduleDetail extends StatefulWidget {
   String selectedBudget;
-  String city;
-  GetSuggestedPlanThreeScreen({this.selectedBudget, this.city});
+  ScheduleDetail({this.selectedBudget});
   @override
-  _GetSuggestedPlanThreeScreenState createState() =>
-      _GetSuggestedPlanThreeScreenState();
+  _ScheduleDetailState createState() => _ScheduleDetailState();
 }
 
-class _GetSuggestedPlanThreeScreenState
-    extends State<GetSuggestedPlanThreeScreen> {
+class _ScheduleDetailState extends State<ScheduleDetail> {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(Duration(days: 10));
   DateTime selectedDate = DateTime.now();
@@ -56,7 +53,7 @@ class _GetSuggestedPlanThreeScreenState
         .doc()
         .set({
       "date": selectedDate,
-      "city": widget.city,
+      "city": 'Riyadh',
       "plan_type": widget.selectedBudget,
     }).then((_) {
       Utils.hideLoader();
@@ -69,10 +66,7 @@ class _GetSuggestedPlanThreeScreenState
   }
 
   getData() {
-    firestoreInstance
-        .collection(widget.selectedBudget)
-        .get()
-        .then((querySnapshot) {
+    firestoreInstance.collection(widget.selectedBudget).get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
         firestoreInstance
             .collection(widget.selectedBudget)
@@ -114,7 +108,9 @@ class _GetSuggestedPlanThreeScreenState
       });
     });
   }
-
+void _launchURL(String url) async {
+  if (!await launch(url)) throw 'Could not launch $url';
+}
   _monthNameWidget(monthName) {
     return Container(
       child: Text(
@@ -189,82 +185,15 @@ class _GetSuggestedPlanThreeScreenState
 
   @override
   Widget build(BuildContext context) {
-    print(widget.selectedBudget);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
-        title: Text('Plan Trip'),
+        title: Text(
+          'Schedule Detail',
+        ),
       ),
       body: Column(
         children: [
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-              color: ConstantColor.medgrey,
-            ),
-            child: Card(
-              color: ConstantColor.lightgrey,
-              child: Column(
-                children: [
-                  ComponentSizedBox.topMargin(size: 20),
-                  Container(
-                    child: Column(
-                      children: [],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15.0, right: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ComponentText.buildTextWidget(
-                            title: 'My Plan',
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold),
-                        ComponentText.buildTextWidget(
-                            title: '2021',
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 100,
-                    child: CalendarStrip(
-                      startDate: startDate,
-                      endDate: endDate,
-                      selectedDate: selectedDate,
-                      onDateSelected: onSelect,
-                      onWeekSelected: onWeekSelect,
-                      dateTileBuilder: dateTileBuilder,
-                      iconColor: Colors.black87,
-                      monthNameWidget: _monthNameWidget,
-                      containerDecoration: BoxDecoration(
-                        color: ConstantColor.lightgrey,
-                      ),
-                    ),
-                  ),
-                  ComponentSizedBox.topMargin(size: 20),
-                  ComponentButton.buildTransparentButton(
-                      height: 50,
-                      width: 130,
-                      title: 'Add',
-                      fontsize: 20,
-                      radius: 30,
-                      btnColor: ConstantColor.medblue,
-                      borderColor: ConstantColor.medblue,
-                      onPressed: () {
-                        addPlan();
-                      },
-                      texColor: Colors.white)
-                ],
-              ),
-            ),
-          ),
-          Divider(
-            height: 1.0,
-            thickness: 1,
-          ),
           ComponentSizedBox.topMargin(size: 10),
           Expanded(
               child: ListView.separated(
@@ -331,29 +260,19 @@ class _GetSuggestedPlanThreeScreenState
                 fontSize: 16,
               ),
               ComponentSizedBox.topMargin(size: 15),
-              Row(
-                children: [
-                  InkWell(
-                    onTap: (){
-                      _launchURL( planLocation.location);
-                    },
-                    child: ComponentText.buildTextWidget(
+              InkWell(
+                onTap: () async{
+                await _launchURL(planLocation.location);
+                },
+                child: Row(
+                  children: [
+                    ComponentText.buildTextWidget(
                         title: 'Location',
                         textDecoration: TextDecoration.underline,
                         color: Color(0xff255EBA)),
-                  ),
-                  ComponentSizedBox.sideMargin(size: 140),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Color(0xff336C7E),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child:
-                        Icon(Icons.chevron_right_rounded, color: Colors.white),
-                  )
-                ],
+                    ComponentSizedBox.sideMargin(size: 140),
+                  ],
+                ),
               )
             ],
           ),
@@ -361,8 +280,4 @@ class _GetSuggestedPlanThreeScreenState
       ),
     );
   }
-   void _launchURL(String url) async {
-     print(url);
-  if (!await launch(url)) throw 'Could not launch $url';
-}
 }

@@ -17,7 +17,7 @@ class GetSuggestedPlanTwoScreen extends StatefulWidget {
 }
 
 class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
-  String _chosenValue;
+  String _chosenValue='Riyadh';
   String budget = '';
 
   BestTutorSite _site = BestTutorSite.low;
@@ -269,37 +269,38 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                   btnColor: ConstantColor.medblue,
                   borderColor: ConstantColor.medblue,
                   onPressed: () {
-                    String selectedBudget = ConstantString.plan_low_riyadh_3;
+                    String selectedBudget = ConstantString.Riyadh_low_3;
                     if (_site == BestTutorSite.low &&
                         duration == BestTutorSite.low) {
-                      selectedBudget = ConstantString.plan_low_riyadh_3;
+                      selectedBudget = ConstantString.low_3;
                     } else if (_site == BestTutorSite.low &&
                         duration == BestTutorSite.med) {
-                      selectedBudget = ConstantString.plan_low_riyadh_5;
+                      selectedBudget = ConstantString.low_5;
                     } else if (_site == BestTutorSite.low &&
                         duration == BestTutorSite.high) {
-                      selectedBudget = ConstantString.plan_low_riyadh_7;
+                      selectedBudget = ConstantString.low_7;
                     } else if (_site == BestTutorSite.med &&
                         duration == BestTutorSite.low) {
-                      selectedBudget = ConstantString.plan_medium_riyadh_3;
+                      selectedBudget = ConstantString.medium_3;
                     } else if (_site == BestTutorSite.med &&
                         duration == BestTutorSite.med) {
-                      selectedBudget = ConstantString.plan_medium_riyadh_5;
+                      selectedBudget = ConstantString.medium_5;
                     } else if (_site == BestTutorSite.med &&
                         duration == BestTutorSite.high) {
-                      selectedBudget = ConstantString.plan_medium_riyadh_7;
+                      selectedBudget = ConstantString.medium_7;
                     } else if (_site == BestTutorSite.high &&
                         duration == BestTutorSite.low) {
-                      selectedBudget = ConstantString.plan_high_riyadh_3;
+                      selectedBudget = ConstantString.high_3;
                     } else if (_site == BestTutorSite.high &&
                         duration == BestTutorSite.med) {
-                      selectedBudget = ConstantString.plan_high_riyadh_5;
+                      selectedBudget = ConstantString.high_5;
                     } else if (_site == BestTutorSite.high &&
                         duration == BestTutorSite.high) {
-                      selectedBudget = ConstantString.plan_high_riyadh_7;
+                      selectedBudget = ConstantString.high_7;
                     }
                     Get.to(GetSuggestedPlanThreeScreen(
-                      selectedBudget: selectedBudget,
+                      selectedBudget:_chosenValue+'_'+ selectedBudget,
+                      city: _chosenValue,
                     ));
                   },
                   texColor: Colors.white)

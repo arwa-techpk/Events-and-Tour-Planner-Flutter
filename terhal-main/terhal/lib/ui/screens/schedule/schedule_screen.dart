@@ -11,6 +11,8 @@ import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/constants/constants_strings.dart';
 import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/plan.dart';
+import 'package:terhal/ui/screens/schedule/schedule_detail.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ScheduleScreen extends StatefulWidget {
   String selectedBudget;
@@ -59,6 +61,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   getData() {
+    plans.clear();
     var firebaseUser = FirebaseAuth.instance.currentUser;
 
     print(firebaseUser.uid);
@@ -76,7 +79,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             .get()
             .then((querySnapshot) {
           querySnapshot.docs.forEach((result) {
-             plans.add(PlanLocation(name: result['city']));
+             plans.add(PlanLocation(name: result['city'],planType: result['plan_type']));
+              //plans.add(PlanLocation(planType: result['plan_type']));
             setState(() {});
           });
         }); 
@@ -124,6 +128,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       });
     }); */
   }
+  void _launchURL(String url) async {
+  if (!await launch(url)) throw 'Could not launch $url';
+}
 
   _monthNameWidget(monthName) {
     return Container(
@@ -297,7 +304,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           padding: const EdgeInsets.only(left: 30),
           child: RotatedBox(
             quarterTurns: -1,
-            child: Text('11:0AM - 11:30AM'),
+            child: Text(''),
           ),
         ),
         Align(
@@ -330,21 +337,36 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   ),
                   ComponentSizedBox.topMargin(size: 15),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ComponentText.buildTextWidget(
-                          title: 'Location',
-                          textDecoration: TextDecoration.underline,
-                          color: Color(0xff255EBA)),
-                      ComponentSizedBox.sideMargin(size: 140),
-                      Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: Color(0xff336C7E),
-                          borderRadius: BorderRadius.circular(10),
+                      Container(),
+                     /*  InkWell(
+                        onTap: (){
+                          _launchURL(planLocation.location);
+                        },
+                        child: ComponentText.buildTextWidget(
+                            title: 'Location',
+                            textDecoration: TextDecoration.underline,
+                            color: Color(0xff255EBA)),
+                      ), */
+                    
+                      InkWell(
+                        onTap: (){
+                          if(planLocation.planType!=null && planLocation.planType.isNotEmpty){
+                          Get.to(ScheduleDetail(selectedBudget: planLocation.planType,));
+                          }
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          margin: EdgeInsets.only(right: 20),
+                          decoration: BoxDecoration(
+                            color: Color(0xff336C7E),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(Icons.chevron_right_rounded,
+                              color: Colors.white),
                         ),
-                        child: Icon(Icons.chevron_right_rounded,
-                            color: Colors.white),
                       )
                     ],
                   )

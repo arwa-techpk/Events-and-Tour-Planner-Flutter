@@ -47,6 +47,7 @@ dependencies:
   cloud_firestore: ^3.1.0
 
   shared_preferences: ^0.5.6+3
+  url_launcher: ^6.0.17
 
   flutter_datetime_picker: ^1.5.1
   flutter_email_sender: ^5.0.2

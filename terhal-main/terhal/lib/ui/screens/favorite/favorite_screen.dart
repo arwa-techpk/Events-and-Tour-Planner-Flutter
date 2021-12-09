@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/constants_colors.dart';
+import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/discover_model.dart';
 import 'package:terhal/models/explore_model.dart';
 import 'package:terhal/ui/screens/explore_screen/explore_detail_screen.dart';
@@ -43,17 +45,44 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         DiscoverModel(title: 'Madain Saleh', image: urlImages[3], isFav: true));
   }
 
-  getData() {
+  unfav(id) {
     var firebaseUser = FirebaseAuth.instance.currentUser;
-    firestoreInstance.collection("favs").doc(firebaseUser.uid).collection(firebaseUser.uid). get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-          exploreList.add(ExploreModel(
-                name: result['name'],
-                image: result['image'],
-                descrription: result['description']));
+    Utils.showLoader();
+    firestoreInstance
+        .collection("favs")
+        .doc(firebaseUser.uid)
+        .collection(firebaseUser.uid)
+        .doc(id)
+        .delete();
+   // getData();
+   exploreList.removeWhere((element) => element.id==id);
+   setState(() {
+     
+   });
+    Utils.hideLoader();
+    Fluttertoast.showToast(msg: 'Un favorite successfully');
 
-            setState(() {});
-       /*  firestoreInstance
+    print("success!");
+  }
+
+  getData() {
+    exploreList.clear();
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    firestoreInstance
+        .collection("favs")
+        .doc(firebaseUser.uid)
+        .collection(firebaseUser.uid)
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        exploreList.add(ExploreModel(
+            name: result['name'],
+            image: result['image'],
+            id: result.id,
+            descrription: result['description']));
+
+        setState(() {});
+        /*  firestoreInstance
             .collection("favs")
             .doc(result.id)
             .collection(firebaseUser.uid)
@@ -115,7 +144,21 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                         discoverModel.image,
                         fit: BoxFit.cover,
                       )),
-                )
+                ),
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: IconButton(
+                    onPressed: () {
+                      unfav(discoverModel.id);
+                    },
+                    icon: const Icon(
+                      Icons.favorite,
+                    ),
+                    color: Colors.red,
+                    iconSize: 40,
+                  ),
+                ),
               ],
             ),
             ComponentSizedBox.topMargin(size: 8),

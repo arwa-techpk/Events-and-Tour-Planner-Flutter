@@ -53,13 +53,14 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
 
   @override
   Widget build(BuildContext context) {
-     print(widget.placeLocation);
+    print(widget.placeLocation);
     return Scaffold(
-      
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
-          child: SingleChildScrollView(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
             child: Column(
               children: [
                 ComponentSizedBox.topMargin(size: 50),
@@ -86,21 +87,21 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                                   ),
                                   Row(
                                     children: [
-                                     /*  CircleAvatar(
-                                        backgroundColor: Colors.brown.shade800,
-                                        radius: 35,
-                                        backgroundImage: NetworkImage(
-                                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStFdB1yoP342SmgNGsgg9lfPHQN4XdpBogWA&usqp=CAU',
-                                        ),
-                                      ), */
-                                     
+                                      /*  CircleAvatar(
+                                          backgroundColor: Colors.brown.shade800,
+                                          radius: 35,
+                                          backgroundImage: NetworkImage(
+                                            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStFdB1yoP342SmgNGsgg9lfPHQN4XdpBogWA&usqp=CAU',
+                                          ),
+                                        ), */
+
                                       Text(
                                         widget.placeName,
                                         style: TextStyle(fontSize: 20),
                                       ),
                                     ],
                                   ),
-                                   SizedBox(
+                                  SizedBox(
                                     height: 10,
                                   ),
                                   InkWell(
@@ -123,16 +124,21 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                 ),
                 ComponentSizedBox.topMargin(size: 40),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ComponentSizedBox.sideMargin(size: 10),
-                    Icon(
-                      Icons.calendar_today,
-                      color: Colors.grey,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          color: Colors.grey,
+                        ),
+                        ComponentSizedBox.sideMargin(size: 5),
+                        ComponentText.buildTextWidget(
+                            title: 'SELECT DATE', color: Colors.grey),
+                      ],
                     ),
-                    ComponentSizedBox.sideMargin(size: 5),
-                    ComponentText.buildTextWidget(
-                        title: 'SELECT DATE', color: Colors.grey),
-                    ComponentSizedBox.sideMargin(size: 140),
                     InkWell(
                       onTap: () async {
                         DateTime dateTime = await showDatePicker(
@@ -141,10 +147,10 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2025),
                         );
-                         if(dateTime!=null){
-                        setState(() {
-                          selectedDate = dateTime;
-                        });
+                        if (dateTime != null) {
+                          setState(() {
+                            selectedDate = dateTime;
+                          });
                         }
                       },
                       child: Container(
@@ -163,8 +169,7 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                   ],
                 ),
                 ComponentSizedBox.topMargin(size: 40),
-                
-                ComponentSizedBox.topMargin(size: 200),
+                ComponentSizedBox.topMargin(size: 180),
                 Row(
                   children: [
                     InkWell(

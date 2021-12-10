@@ -186,7 +186,7 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
               ComponentSizedBox.topMargin(size: 10),
               Container(
                 height: 90,
-                margin: EdgeInsets.symmetric(horizontal: 40),
+                margin: EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   color: Color(0xffE5EEF0),
@@ -203,7 +203,7 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 60),
+                          padding: const EdgeInsets.only(left: 30),
                           child: DropdownButton<String>(
                             focusColor: Colors.white,
 
@@ -242,7 +242,7 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                         Row(
                           children: [
                             Container(
-                              margin: EdgeInsets.only(left: 30),
+                              margin: EdgeInsets.only(left: 10),
                               height: 50,
                               width: 2,
                               color: Colors.black.withOpacity(0.4),

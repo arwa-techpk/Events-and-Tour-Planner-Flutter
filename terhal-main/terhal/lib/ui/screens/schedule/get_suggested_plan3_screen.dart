@@ -25,7 +25,7 @@ class GetSuggestedPlanThreeScreen extends StatefulWidget {
 class _GetSuggestedPlanThreeScreenState
     extends State<GetSuggestedPlanThreeScreen> {
   DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(Duration(days: 10));
+  DateTime endDate = DateTime.now().add(Duration(days: 50));
   DateTime selectedDate = DateTime.now();
   List<DateTime> markedDates = [
     DateTime.now().subtract(Duration(days: 1)),
@@ -57,6 +57,7 @@ class _GetSuggestedPlanThreeScreenState
         .set({
       "date": selectedDate,
       "city": widget.city,
+      "location": '',
       "plan_type": widget.selectedBudget,
     }).then((_) {
       Utils.hideLoader();
@@ -325,13 +326,11 @@ class _GetSuggestedPlanThreeScreenState
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
               ComponentSizedBox.topMargin(size: 15),
-              
-             
               Row(
                 children: [
                   InkWell(
-                    onTap: (){
-                      _launchURL( planLocation.location);
+                    onTap: () {
+                      _launchURL(planLocation.location);
                     },
                     child: ComponentText.buildTextWidget(
                         title: 'Location',
@@ -339,7 +338,6 @@ class _GetSuggestedPlanThreeScreenState
                         color: Color(0xff255EBA)),
                   ),
                   ComponentSizedBox.sideMargin(size: 140),
-                 
                 ],
               )
             ],
@@ -348,8 +346,9 @@ class _GetSuggestedPlanThreeScreenState
       ),
     );
   }
-   void _launchURL(String url) async {
-     print(url);
-  if (!await launch(url)) throw 'Could not launch $url';
-}
+
+  void _launchURL(String url) async {
+    print(url);
+    if (!await launch(url)) throw 'Could not launch $url';
+  }
 }

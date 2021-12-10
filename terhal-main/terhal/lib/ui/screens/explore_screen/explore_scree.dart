@@ -10,9 +10,11 @@ import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/const_images_paths.dart';
 import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/helpers/utils.dart';
+import 'package:terhal/models/explore_model.dart';
 import 'package:terhal/models/weather_model.dart';
 import 'package:terhal/ui/screens/explore_screen/discover_screen.dart';
 import 'package:terhal/ui/screens/explore_screen/explore_detail_screen.dart';
+import 'package:terhal/ui/screens/explore_screen/most_visited.dart';
 import 'package:terhal/ui/screens/schedule/make_a_plan1_screen.dart';
 import 'package:terhal/utils/data_service.dart';
 import 'package:weather_icons/weather_icons.dart' as icon;
@@ -51,6 +53,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           Utils.hideLoader();
           Get.to(MakeAPlanOneScreen(
             placeName: result['name'],
+            placeLocation: result['location'],
           ));
         }
       });
@@ -282,7 +285,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget buildImage(String urlImage, int index) => InkWell(
-        onTap: () {},
+        onTap: () {
+          Get.to(MostVisitedScreen(exploreModel: ExploreModel(image: urlImage),));
+        },
         child: Container(
           margin: EdgeInsets.all(8),
           decoration: BoxDecoration(

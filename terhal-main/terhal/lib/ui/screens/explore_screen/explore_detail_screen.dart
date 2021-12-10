@@ -43,9 +43,11 @@ class _ExploreDetailScreenState extends State<ExploreDetailScreen> {
       print("success!");
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
       ),
@@ -55,7 +57,6 @@ class _ExploreDetailScreenState extends State<ExploreDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             
               ComponentSizedBox.topMargin(size: 20),
               ComponentText.buildTextWidget(
                   title: widget.exploreModel.name,
@@ -69,78 +70,81 @@ class _ExploreDetailScreenState extends State<ExploreDetailScreen> {
                 height: 280,
                 fit: BoxFit.cover,
               ),
-             
-      
-                 ComponentText.buildTextWidget(
-                      maxLines: 3 ,
-                      title: widget.exploreModel.descrription,
-                      color: ConstantColor.black.withOpacity(0.6),
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal,
-                      height: 1.6),
-                      ComponentSizedBox.topMargin(size: 40),
-                      
-                       Row(
-                         mainAxisAlignment:MainAxisAlignment.spaceBetween,
+              Container(
+                height: 110,
+                child: ListView(
                   children: [
-                    ComponentSizedBox.sideMargin(size: 10),
-                    Icon(
-                      Icons.calendar_today,
-                      color: Colors.grey,
-                    ),
-                    ComponentSizedBox.sideMargin(size: 5),
                     ComponentText.buildTextWidget(
-                        title: 'SELECT DATE', color: Colors.grey),
-                    ComponentSizedBox.sideMargin(size: 10),
-                    InkWell(
-                      onTap: () async {
-                        DateTime dateTime = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2025),
-                        );
-                        if(dateTime!=null){
+                        maxLines: 10,
+                        title: widget.exploreModel.descrription,
+                        color: ConstantColor.black.withOpacity(0.6),
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                        height: 1.6),
+                  ],
+                ),
+              ),
+              ComponentSizedBox.topMargin(size: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ComponentSizedBox.sideMargin(size: 10),
+                  Icon(
+                    Icons.calendar_today,
+                    color: Colors.grey,
+                  ),
+                  ComponentSizedBox.sideMargin(size: 5),
+                  ComponentText.buildTextWidget(
+                      title: 'SELECT DATE', color: Colors.grey),
+                  ComponentSizedBox.sideMargin(size: 10),
+                  InkWell(
+                    onTap: () async {
+                      DateTime dateTime = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2025),
+                      );
+                      if (dateTime != null) {
                         setState(() {
                           selectedDate = dateTime;
                         });
-                        }
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: Center(
-                            child: ComponentText.buildTextWidget(
-                                title: "${selectedDate.toLocal()}".split(' ')[0],
-                                color: Colors.grey)),
+                      }
+                    },
+                    child: Container(
+                      height: 50,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey),
                       ),
+                      child: Center(
+                          child: ComponentText.buildTextWidget(
+                              title: "${selectedDate.toLocal()}".split(' ')[0],
+                              color: Colors.grey)),
                     ),
-                  ],
+                  ),
+                ],
+              ),
+              ComponentSizedBox.topMargin(size: 30),
+              Center(
+                child: InkWell(
+                  onTap: () {
+                    addPlan();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 180,
+                    decoration: BoxDecoration(
+                      color: Color(0xff56A1AF),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                        child: ComponentText.buildTextWidget(
+                            title: "Add to Schedule", color: Colors.white)),
+                  ),
                 ),
-                 ComponentSizedBox.topMargin(size: 30),
-                    Center(
-                      child: InkWell(
-                        onTap: () {
-                          addPlan();
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 180,
-                          decoration: BoxDecoration(
-                            color: Color(0xff56A1AF),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                              child: ComponentText.buildTextWidget(
-                                  title: "Add to Schedule", color: Colors.white)),
-                        ),
-                      ),
-                    ),
-                
+              ),
             ],
           ),
         ),

@@ -78,7 +78,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
           plans.add(PlanLocation(
-              name: result['city'], planType: result['plan_type']));
+              name: result['city'],
+              location: result['location'] ?? '',
+              planType: result['plan_type']));
           //plans.add(PlanLocation(planType: result['plan_type']));
           setState(() {});
         });
@@ -314,19 +316,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       fontWeight: FontWeight.bold),
                   ComponentSizedBox.topMargin(size: 15),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   
                     children: [
                       Container(),
-                      /*  InkWell(
-                        onTap: (){
-                          _launchURL(planLocation.location);
-                        },
-                        child: ComponentText.buildTextWidget(
-                            title: 'Location',
-                            textDecoration: TextDecoration.underline,
-                            color: Color(0xff255EBA)),
-                      ), */
-
+                      planLocation.location != null &&
+                              planLocation.location.length > 0
+                          ? InkWell(
+                              onTap: () {
+                                _launchURL(planLocation.location);
+                              },
+                              child: ComponentText.buildTextWidget(
+                                  title: 'Location',
+                                  textDecoration: TextDecoration.underline,
+                                  color: Color(0xff255EBA)),
+                            )
+                          : Container(),
                       planLocation.planType != null &&
                               planLocation.planType.isNotEmpty
                           ? InkWell(

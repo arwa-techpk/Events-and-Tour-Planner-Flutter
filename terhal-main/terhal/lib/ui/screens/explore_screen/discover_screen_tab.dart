@@ -44,7 +44,7 @@ class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
           querySnapshot.docs.forEach((result) {
             print(result['name']);
             plans.add(
-                ExploreModel(name: result['name'], image: result['image'],descrription: result['description'],id: result.id));
+                ExploreModel(name: result['name'], image: result['image'],descrription: result['description'],id: result.id,location: result['location']));
                 
             setState(() {});
           });

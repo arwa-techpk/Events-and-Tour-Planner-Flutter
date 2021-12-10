@@ -32,7 +32,7 @@ class _ExploreDetailScreenState extends State<ExploreDetailScreen> {
         .set({
       "date": selectedDate.toString().split(' ')[0],
       "city": widget.exploreModel.name,
-      'location': '',
+      'location': widget.exploreModel.location,
       "plan_type": '',
     }).then((_) {
       Utils.hideLoader();

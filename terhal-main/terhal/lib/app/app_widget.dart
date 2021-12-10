@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
@@ -14,6 +15,10 @@ import 'package:terhal/ui/screens/splash_screen.dart';
 class AppWidget extends GetWidget {
   @override
   Widget build(BuildContext context) {
+     SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

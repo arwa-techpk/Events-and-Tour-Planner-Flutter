@@ -23,7 +23,7 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(Duration(days: 10));
+  DateTime endDate = DateTime.now().add(Duration(days: 60));
   DateTime selectedDate = DateTime.now();
   List<DateTime> markedDates = [
     DateTime.now().subtract(Duration(days: 1)),

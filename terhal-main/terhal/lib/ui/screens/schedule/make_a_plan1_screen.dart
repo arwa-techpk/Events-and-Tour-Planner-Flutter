@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:terhal/components/bottom_navigation.dart';
 import 'package:terhal/components/component_button.dart';
@@ -110,7 +111,8 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                                     },
                                     child: ComponentText.buildTextWidget(
                                         title: 'Location',
-                                        textDecoration: TextDecoration.underline,
+                                        textDecoration:
+                                            TextDecoration.underline,
                                         color: Color(0xff255EBA)),
                                   ),
                                 ],
@@ -144,12 +146,12 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                         DateTime dateTime = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
+                          firstDate: DateTime.now(),
                           lastDate: DateTime(2025),
                         );
                         if (dateTime != null) {
                           setState(() {
-                            selectedDate = dateTime;
+                            selectedDate  = dateTime;
                           });
                         }
                       },
@@ -162,7 +164,8 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                         ),
                         child: Center(
                             child: ComponentText.buildTextWidget(
-                                title: "${selectedDate.toLocal()}".split(' ')[0],
+                                title:
+                                    "${selectedDate.toLocal()}".split(' ')[0],
                                 color: Colors.grey)),
                       ),
                     ),

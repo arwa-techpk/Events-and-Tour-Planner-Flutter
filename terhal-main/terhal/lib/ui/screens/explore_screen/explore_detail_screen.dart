@@ -102,7 +102,7 @@ class _ExploreDetailScreenState extends State<ExploreDetailScreen> {
                       DateTime dateTime = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
+                        firstDate: DateTime.now(),
                         lastDate: DateTime(2025),
                       );
                       if (dateTime != null) {

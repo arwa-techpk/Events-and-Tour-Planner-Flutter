@@ -42,8 +42,9 @@ class _MostVisitedScreenState extends State<MostVisitedScreen> {
                 height: 280,
                 fit: BoxFit.cover,
               ),
+               ComponentSizedBox.topMargin(size: 10),
               Container(
-                height: 110,
+                height: 180,
                 child: ListView(
                   children: [
                     ComponentText.buildTextWidget(
@@ -56,8 +57,8 @@ class _MostVisitedScreenState extends State<MostVisitedScreen> {
                   ],
                 ),
               ),
-              ComponentSizedBox.topMargin(size: 40),
-              ComponentSizedBox.topMargin(size: 30),
+             
+              
             ],
           ),
         ),

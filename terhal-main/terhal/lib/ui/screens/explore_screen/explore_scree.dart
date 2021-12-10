@@ -34,6 +34,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
     'https://www.arabnews.com/sites/default/files/styles/n_670_395/public/2019/07/07/1655116-1608439442.jpg?itok=wNbz3w3s',
     'https://farm4.static.flickr.com/3020/2989619669_a3f776497f.jpg',
   ];
+  final description=[
+    "It is the world's third-tallest building with a hole after the Shanghai World Financial Center and the 85 Sky Tower in Taiwan.",
+    "Madain Saleh is the most iconic historical site of the Kingdom of Saudi Arabia and the first to be listed as a UNESCO ﻿Word Heritage, back in 2008. It is located in the north of Madinah Province, in the area of Al-Ula",
+    "Soudah (Arabic: ٱلسّوْدَة), is a mountainous area in the Asir region of Saudi Arabia. At 3,015 metres (9,893 ft) above sea level, the area is known for its dense juniper tree covered mountains.",
+    "The Al Faisaliyah Centre (or Al Faisaliah Centre, Arabic: برج الفيصلية‎) is a commercial skyscraper and mixed-use complex located in the business district of Riyadh, Saudi Arabia. The 267-metre-high office tower, the centrepiece of the Foster + Partners development, it is notable for having been the first skyscraper built in Saudi Arabia, and for the monumental stained glass wall of its lobby, designed by architectural artist Brian Clarke in collaboration with Norman Foster. Presently the fourth tallest building in Saudi Arabia after the Kingdom Centre, Burj Rafal and Abraj Al Bait, the Center presently ranks as the 325th tallest building in the world."
+
+
+  ];
   int activeIndex = 0;
   final String _City = 'Riyadh';
   final _dataService = DataService();
@@ -246,6 +254,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       onTap: () {
         Get.to(DiscoverScreenTab(
           placeType: title,
+          
         ));
       },
       child: Container(
@@ -286,7 +295,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   Widget buildImage(String urlImage, int index) => InkWell(
         onTap: () {
-          Get.to(MostVisitedScreen(exploreModel: ExploreModel(image: urlImage),));
+          Get.to(MostVisitedScreen(exploreModel: ExploreModel(image: urlImage,descrription: description[index])));
         },
         child: Container(
           margin: EdgeInsets.all(8),

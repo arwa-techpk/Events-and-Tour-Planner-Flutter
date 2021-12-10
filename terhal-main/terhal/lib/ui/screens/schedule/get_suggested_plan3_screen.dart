@@ -25,7 +25,7 @@ class GetSuggestedPlanThreeScreen extends StatefulWidget {
 class _GetSuggestedPlanThreeScreenState
     extends State<GetSuggestedPlanThreeScreen> {
   DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now().add(Duration(days: 50));
+  DateTime endDate = DateTime.now().add(Duration(days: 60));
   DateTime selectedDate = DateTime.now();
   List<DateTime> markedDates = [
     DateTime.now().subtract(Duration(days: 1)),

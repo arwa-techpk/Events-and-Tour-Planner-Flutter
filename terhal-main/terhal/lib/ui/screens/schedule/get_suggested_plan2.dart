@@ -17,7 +17,7 @@ class GetSuggestedPlanTwoScreen extends StatefulWidget {
 }
 
 class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
-  String _chosenValue='Riyadh';
+  String _chosenValue = 'Riyadh';
   String budget = '';
 
   BestTutorSite _site = BestTutorSite.low;
@@ -25,15 +25,14 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
         title: Text('Plan Trip'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-          children: [
-            
+            children: [
               ComponentSizedBox.topMargin(size: 10),
               ComponentText.buildTextWidget(
                   title: 'Budget', fontSize: 26, fontWeight: FontWeight.bold),
@@ -239,21 +238,6 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                             },
                           ),
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              height: 50,
-                              width: 2,
-                              color: Colors.black.withOpacity(0.4),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  Get.to(Get.to(GetSuggestedPlanTwoScreen()));
-                                },
-                                icon: Icon(Icons.arrow_forward_ios_sharp))
-                          ],
-                        )
                       ],
                     ),
                   ),
@@ -298,10 +282,17 @@ class _GetSuggestedPlanTwoScreenState extends State<GetSuggestedPlanTwoScreen> {
                         duration == BestTutorSite.high) {
                       selectedBudget = ConstantString.high_7;
                     }
-                    Get.to(GetSuggestedPlanThreeScreen(
-                      selectedBudget:_chosenValue+'_'+ selectedBudget,
-                      city: _chosenValue,
-                    ));
+                    if (_chosenValue == 'Al Khobar') {
+                      Get.to(GetSuggestedPlanThreeScreen(
+                        selectedBudget: 'Alkhobar_' + selectedBudget,
+                        city: _chosenValue,
+                      ));
+                    } else {
+                      Get.to(GetSuggestedPlanThreeScreen(
+                        selectedBudget: _chosenValue + '_' + selectedBudget,
+                        city: _chosenValue,
+                      ));
+                    }
                   },
                   texColor: Colors.white)
             ],

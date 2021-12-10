@@ -5,12 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:terhal/ui/screens/auth/sigin_in.dart';
 
-
-
 class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({
+    Key key,
+  }) : super(key: key);
 
-    const WelcomeScreen({Key key,}) : super(key: key);
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +22,6 @@ class WelcomeScreen extends StatelessWidget {
     return Container(
       child: Stack(
         children: <Widget>[
-         
           Pinned.fromPins(
             Pin(start: -30.7, end: -8.0),
             Pin(size: 229.4, start: -100.4),
@@ -114,69 +112,55 @@ class WelcomeScreen extends StatelessWidget {
                     fit: BoxFit.fill,
                   ),
                 ),
-                Pinned.fromPins(
-                  Pin(size: 317.0, middle: 0.571),
-                  Pin(size: 186.0, middle: 0.12066),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: new AssetImage('image/images/logo.png'),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                ),
-               
-
-
-
-                
               ],
             ),
           ),
-           Padding(
-             padding: const EdgeInsets.only(top: 60,left: 16),
-             child: Text(
-                      'Welcome back to your World! ',
-                      style: TextStyle(
-                        fontFamily: 'Kailasa',
-                        fontSize: 20,
-                        color: const Color(0xff352614),
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-           ),
-           Column(
-             mainAxisAlignment: MainAxisAlignment.center,
-             crossAxisAlignment: CrossAxisAlignment.center,
+          Column(
+          
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-             
-                   Container(
-                     width: 160,
-                     height: 50,
-                     margin: EdgeInsets.only(left: 30,top: 100),
-                      child: ElevatedButton(
-                              child: Text(
-                                'Log In',
-                                style: TextStyle(
-                                fontSize: 30,
-                                
-                                ),
-                              ),
-                            
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xff56a1af),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)), 
-                                       ),
-                              onPressed: (){
-                                print('object');
-                                Get.off(SignIn());
-                              },  
-                              
-                                ),
+              Container(
+                margin: EdgeInsets.only(top: 100, left: 16),
+                child: Image.asset(
+                  'image/images/logo.png',
+                  width: 240,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10, left: 16),
+                child: Text(
+                  'Welcome back to your World! ',
+                  style: TextStyle(
+                    fontFamily: 'Kailasa',
+                    fontSize: 20,
+                    color: const Color(0xff352614),
                   ),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Container(
+                width: 160,
+                height: 50,
+                margin: EdgeInsets.only(left: 30, top: 100),
+                child: ElevatedButton(
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(
+                      fontSize: 30,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xff56a1af),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40.0)),
+                  ),
+                  onPressed: () {
+                    print('object');
+                    Get.off(SignIn());
+                  },
+                ),
+              ),
             ],
-
           ),
         ],
       ),

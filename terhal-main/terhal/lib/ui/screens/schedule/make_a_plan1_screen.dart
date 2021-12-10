@@ -141,9 +141,11 @@ class _MakeAPlanOneScreenState extends State<MakeAPlanOneScreen> {
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2025),
                         );
+                         if(dateTime!=null){
                         setState(() {
                           selectedDate = dateTime;
                         });
+                        }
                       },
                       child: Container(
                         height: 50,

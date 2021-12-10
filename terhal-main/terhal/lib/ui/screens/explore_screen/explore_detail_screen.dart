@@ -72,7 +72,7 @@ class _ExploreDetailScreenState extends State<ExploreDetailScreen> {
              
       
                  ComponentText.buildTextWidget(
-                      maxLines: 6,
+                      maxLines: 3 ,
                       title: widget.exploreModel.descrription,
                       color: ConstantColor.black.withOpacity(0.6),
                       fontSize: 18,
@@ -100,9 +100,11 @@ class _ExploreDetailScreenState extends State<ExploreDetailScreen> {
                           firstDate: DateTime(2000),
                           lastDate: DateTime(2025),
                         );
+                        if(dateTime!=null){
                         setState(() {
                           selectedDate = dateTime;
                         });
+                        }
                       },
                       child: Container(
                         height: 50,

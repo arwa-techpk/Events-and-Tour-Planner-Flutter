@@ -254,12 +254,7 @@ void _launchURL(String url) async {
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
               ComponentSizedBox.topMargin(size: 15),
-              ComponentText.buildTextWidget(
-                title: 'Place type: Restaurant',
-                color: Colors.white,
-                fontSize: 16,
-              ),
-              ComponentSizedBox.topMargin(size: 15),
+            
               InkWell(
                 onTap: () async{
                 await _launchURL(planLocation.location);

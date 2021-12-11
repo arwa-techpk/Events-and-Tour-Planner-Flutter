@@ -18,6 +18,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'admin/admin_menu.dart';
 import 'auth/sigin_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -34,6 +36,24 @@ class _SplashScreenState extends State<SplashScreen> {
       print(user);
       if (user != null) {
         Get.offAll(AdminMenu());
+
+
+        FirebaseFirestore.instance.collection('users')
+            .doc(user).get()
+            .then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+
+            String role = (documentSnapshot.data() as Map)['role'];
+
+            if(role=='admin'){
+              Get.offAll(AdminMenu());
+            }else{
+              Get.offAll(BottomNavigation());
+            }
+          } else {
+            Get.offAll(BottomNavigation());
+          }
+        });
       } else {
        // Navigator.popAndPushNamed(context, SignIn.id);
        Get.offAll(const WelcomeScreen());

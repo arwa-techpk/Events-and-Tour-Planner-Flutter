@@ -14,6 +14,10 @@ import 'package:terhal/ui/screens/auth/reset_password.dart';
 import 'package:terhal/ui/screens/home_screen.dart';
 import 'package:terhal/utils/size_config.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:terhal/ui/screens/admin/admin_menu.dart';
+
 enum SigninType { signin, register }
 
 class SignIn extends StatefulWidget with EmailAndPasswordValidators {
@@ -58,15 +62,34 @@ final GlobalKey<FormState> _key = GlobalKey<FormState>();
       _isLoading = true;
     });
     Utils.showLoader();
-    try {
-      if (_formType == SigninType.signin) {
-        await auth.signInWithEmailAndPassword(_email, _password);
-      } else {
-        await auth.createUserWithEmailAndPassword(_email, _password,_name);
-      }
-      Utils.hideLoader();
-      Get.offAll(BottomNavigation());
-      //Navigator.of(context).pop();
+      try {
+        User user;
+
+        if (_formType == SigninType.signin) {
+          user = await auth.signInWithEmailAndPassword(_email, _password);
+        } else {
+          user = await auth.createUserWithEmailAndPassword(_email, _password,_name);
+        }
+
+
+        FirebaseFirestore.instance.collection('users')
+            .doc(user.uid).get()
+            .then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+
+            String role = (documentSnapshot.data() as Map)['role'];
+
+            if(role=='admin'){
+              Get.offAll(AdminMenu());
+            }else{
+              Get.offAll(BottomNavigation());
+            }
+          } else {
+            Get.offAll(BottomNavigation());
+          }
+        });
+        Utils.hideLoader();
+        //Navigator.of(context).pop();
     } catch (e) {
       Utils.hideLoader();
       print(e.toString());

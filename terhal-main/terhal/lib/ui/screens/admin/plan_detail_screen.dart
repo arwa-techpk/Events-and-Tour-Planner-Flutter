@@ -33,6 +33,8 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
     DateTime.now().add(Duration(days: 4))
   ];
   String selectedTime = '';
+
+  bool _isDeleting = false;
   List<PlanDay> plans = [];
   final firestoreInstance = FirebaseFirestore.instance;
   onSelect(data) {
@@ -177,7 +179,50 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
-        title: Text('Plan Detail'),
+        title: Text('Plan Detail 1'),
+        actions: [
+          _isDeleting
+              ? Padding(
+            padding: const EdgeInsets.only(
+              top: 10.0,
+              bottom: 10.0,
+              right: 16.0,
+            ),
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.redAccent,
+              ),
+              strokeWidth: 3,
+            ),
+          )
+              : IconButton(
+            icon: Icon(
+              Icons.delete,
+              color: Colors.redAccent,
+              size: 32,
+            ),
+            onPressed: () async {
+              setState(() {
+                _isDeleting = true;
+              });
+
+              DocumentReference documentReferencer = firestoreInstance
+                  .collection('get_a_plan')
+                  .doc(widget.selectedPlan);
+
+              await documentReferencer
+                  .delete()
+                  .whenComplete(() => print('Note item deleted from the database'))
+                  .catchError((e) => print(e));
+
+              setState(() {
+                _isDeleting = false;
+              });
+
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -259,11 +304,10 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                 IconButton(onPressed: (){
                    Get.to(EditPlaceScreen(selectedPlan: widget.selectedPlan,day: day,planLocation: planLocation,));
                 }, icon: Icon(Icons.edit,color: Colors.white,))
-              ],
-            ),
+             ],
           ),
         ),
-      
+        )
     );
   }
 

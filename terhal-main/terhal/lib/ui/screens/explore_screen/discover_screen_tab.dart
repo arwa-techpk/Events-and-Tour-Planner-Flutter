@@ -59,6 +59,7 @@ class _DiscoverScreenTabState extends State<DiscoverScreenTab> {
       "name": exploreModel.name,
       "image": exploreModel.image,
       "description": exploreModel.descrription,
+      'location':exploreModel.location
     }).then((_) {
        Utils.hideLoader();
       Fluttertoast.showToast(msg: 'Place succesfully addes to favorite');

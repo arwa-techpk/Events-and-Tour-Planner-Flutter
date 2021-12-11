@@ -79,6 +79,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             name: result['name'],
             image: result['image'],
             id: result.id,
+            location: result['location'],
             descrription: result['description']));
 
         setState(() {});

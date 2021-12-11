@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
       String user = await Get.find<PrefManager>().read('user');
       print(user);
       if (user != null) {
-        Get.offAll(BottomNavigation());
+        Get.offAll(AdminMenu());
       } else {
        // Navigator.popAndPushNamed(context, SignIn.id);
        Get.offAll(const WelcomeScreen());

@@ -57,15 +57,28 @@ class __SignInFormState extends State<_SignInForm> {
   final firestoreInstance = FirebaseFirestore.instance;
 
   bool _autoValidate = false;
-  addPlan() {
+
+  addPlan()async {
     Utils.showLoader();
+    await  firestoreInstance
+        .collection('get_a_plan')
+        .doc(widget.selectedPlan).set({'test':'test'});
+         await  firestoreInstance
+        .collection('get_a_plan')
+        .doc(widget.selectedPlan).collection(widget.selectedPlan)
+        .doc("Plan").set({'test':'test'});
+          await  firestoreInstance
+        .collection('get_a_plan')
+        .doc(widget.selectedPlan).collection(widget.selectedPlan)
+        .doc("Plan") .collection('days')
+        .doc("Day1").set({'test':'test'});
     firestoreInstance
         .collection('get_a_plan')
         .doc(widget.selectedPlan)
         .collection(widget.selectedPlan)
-        .doc('plan')
+        .doc("Plan")
         .collection('days')
-        .doc('Day ${widget.day}')
+        .doc("Day1")
         .collection('places')
         .doc()
         .set({

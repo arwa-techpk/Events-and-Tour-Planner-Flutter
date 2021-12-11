@@ -10,11 +10,13 @@ import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/components/component_text_widgets.dart';
 import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/constants/constants_strings.dart';
+import 'package:terhal/ui/screens/admin/slelect_plan_screen.dart';
 import 'package:terhal/ui/screens/auth/welcome_screen.dart';
 import 'package:terhal/ui/screens/login_screen.dart';
 import 'package:terhal/ui/screens/pref_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'admin/admin_menu.dart';
 import 'auth/sigin_in.dart';
 
 class SplashScreen extends StatefulWidget {

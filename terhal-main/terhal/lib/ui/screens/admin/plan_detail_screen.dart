@@ -13,6 +13,8 @@ import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/plan.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'edit_place_screen.dart';
+
 class PlanDetailScreen extends StatefulWidget {
   String selectedPlan;
   String city;
@@ -85,6 +87,7 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
                 planDay.plans.add(PlanLocation(
                   name: result3[ConstantString.name],
                   location: result3[ConstantString.location],
+                  id: result3.id.toString()
                 ));
 
                 setState(() {});
@@ -208,54 +211,59 @@ class _PlanDetailScreenState extends State<PlanDetailScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return buildItemList(planDay.plans[index]);
+              return buildItemList(planDay.plans[index],planDay.title);
             },
             itemCount: planDay.plans.length),
       ],
     );
   }
 
-  Widget buildItemList(PlanLocation planLocation) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 6),
-        height: 140,
-        width: 300,
-        decoration: BoxDecoration(
-            color: ConstantColor.medblue,
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(40), topLeft: Radius.circular(40))),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ComponentSizedBox.topMargin(size: 20),
-              ComponentText.buildTextWidget(
-                  title: planLocation.name,
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-              ComponentSizedBox.topMargin(size: 15),
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      _launchURL(planLocation.location);
-                    },
-                    child: ComponentText.buildTextWidget(
-                        title: 'Location',
-                        textDecoration: TextDecoration.underline,
-                        color: Color(0xff255EBA)),
-                  ),
-                  ComponentSizedBox.sideMargin(size: 140),
-                ],
-              )
-            ],
+  Widget buildItemList(PlanLocation planLocation,String day) {
+    return  Align(
+        alignment: Alignment.topRight,
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 6),
+          height: 140,
+          width: 300,
+          decoration: BoxDecoration(
+              color: ConstantColor.medblue,
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40), topLeft: Radius.circular(40))),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ComponentSizedBox.topMargin(size: 20),
+                ComponentText.buildTextWidget(
+                    title: planLocation.name,
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                ComponentSizedBox.topMargin(size: 15),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _launchURL(planLocation.location);
+                      },
+                      child: ComponentText.buildTextWidget(
+                          title: 'Location',
+                          textDecoration: TextDecoration.underline,
+                          color: Color(0xff255EBA)),
+                    ),
+
+                    ComponentSizedBox.sideMargin(size: 140),
+                  ],
+                ),
+                IconButton(onPressed: (){
+                   Get.to(EditPlaceScreen(selectedPlan: widget.selectedPlan,day: day,planLocation: planLocation,));
+                }, icon: Icon(Icons.edit,color: Colors.white,))
+              ],
+            ),
           ),
         ),
-      ),
+      
     );
   }
 

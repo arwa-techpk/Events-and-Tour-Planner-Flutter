@@ -12,6 +12,7 @@ class PlanDay{
 
 class PlanLocation {
   String name, location,planType;
+  String id;
 
-  PlanLocation({this.name, this.location,this.planType});
+  PlanLocation({this.name, this.location,this.planType,this.id});
 }

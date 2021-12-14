@@ -11,18 +11,19 @@ import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/constants/constants_strings.dart';
 import 'package:terhal/helpers/utils.dart';
 import 'package:terhal/models/plan.dart';
-import 'package:terhal/ui/screens/admin/plan_detail_screen.dart';
-import 'package:terhal/ui/screens/schedule/schedule_detail.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PlanScreen extends StatefulWidget {
-  String selectedBudget;
-  PlanScreen({this.selectedBudget});
+import 'edit_place_screen.dart';
+
+class PlanDetailScreen extends StatefulWidget {
+  String selectedPlan;
+  String city;
+  PlanDetailScreen({this.selectedPlan});
   @override
-  _PlanScreenState createState() => _PlanScreenState();
+  _PlanDetailScreenState createState() => _PlanDetailScreenState();
 }
 
-class _PlanScreenState extends State<PlanScreen> {
+class _PlanDetailScreenState extends State<PlanDetailScreen> {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(Duration(days: 60));
   DateTime selectedDate = DateTime.now();
@@ -32,14 +33,12 @@ class _PlanScreenState extends State<PlanScreen> {
     DateTime.now().add(Duration(days: 4))
   ];
   String selectedTime = '';
-  List<PlanLocation> plans = [];
+  List<PlanDay> plans = [];
   final firestoreInstance = FirebaseFirestore.instance;
   onSelect(data) {
     selectedDate = data;
     selectedTime = data.toString().split(' ')[0];
-    setState(() {});
-    plans = [];
-    getData();
+    print(selectedTime);
     print("Selected Date -> $data");
   }
 
@@ -47,76 +46,58 @@ class _PlanScreenState extends State<PlanScreen> {
     print("Selected week starting at -> $data");
   }
 
-  addPlan() {
-    var firebaseUser = FirebaseAuth.instance.currentUser;
-    firestoreInstance.collection("users_plan").doc(firebaseUser.uid).set({
-      "date": selectedDate,
-      "city": 'Riyadh',
-      "plan_type": widget.selectedBudget,
-    }).then((_) {
-      Get.offAll(BottomNavigation());
-      print("success!");
-    });
-  }
-
-  getData() async {
-    plans.clear();
-    var firebaseUser = FirebaseAuth.instance.currentUser;
-
-    firestoreInstance.collection('get_a_plan').get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        plans.add(PlanLocation(
-          name: result.id,
-        ));
-        //plans.add(PlanLocation(planType: result['plan_type']));
-        setState(() {});
-      });
-    });
-    /* firestoreInstance.collection("plans").doc().get().then((querySnapshot) {
-      /*  querySnapshot.docs.forEach((result) {
-        /*  firestoreInstance
-            .collection("users_plan")
-            .doc(firebaseUser.uid)
-            .collection('plans')
-            .get()
-            .then((querySnapshot) {
-          querySnapshot.docs.forEach((result) {
-            setState(() {});
-          });
-        }); */
-      }); */
-    }); */
-    /*  firestoreInstance
-        .collection("users_plan")
-        .doc(firebaseUser.uid)
-        .collection('plans')
+  getData() {
+    firestoreInstance
+        .collection('get_a_plan')
+        .doc(widget.selectedPlan)
+        .collection(widget.selectedPlan)
         .get()
         .then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
-        print(result);
         firestoreInstance
-            .collection("users_plan")
-            .doc()
-            .collection('plans')
-            .doc(result.id)
-            .collection(selectedTime)
+            .collection('get_a_plan')
+            .doc(widget.selectedPlan)
+            .collection(widget.selectedPlan)
+            .doc('Plan')
+            .collection('days')
             .get()
             .then((querySnapshot) {
-          print(result['city']);
-          querySnapshot.docs.forEach((result) {
-            print(result);
-            plans.add(PlanLocation(name: result['city']));
+          querySnapshot.docs.forEach((result1) {
+            print(result1.id);
+            PlanDay planDay = PlanDay(plans: [], title:result1.id);
 
-            setState(() {});
-           
+            /*   print(result['name']);
+            plans.add(PlanLocation(
+                name: result[ConstantString.name],
+                location: result[ConstantString.location])); */
+            //setState(() {});
+            firestoreInstance
+                .collection('get_a_plan')
+                .doc(widget.selectedPlan)
+                .collection(widget.selectedPlan)
+                .doc('Plan')
+                .collection('days')
+                .doc(result1.id)
+                .collection('places')
+                .get()
+                .then((querySnapshot) {
+              querySnapshot.docs.forEach((result3) {
+                print(result3['name']);
+
+                planDay.plans.add(PlanLocation(
+                  name: result3[ConstantString.name],
+                  location: result3[ConstantString.location],
+                  id: result3.id.toString()
+                ));
+
+                setState(() {});
+              });
+              plans.add(planDay);
+            });
           });
         });
       });
-    }); */
-  }
-
-  void _launchURL(String url) async {
-    if (!await launch(url)) throw 'Could not launch $url';
+    });
   }
 
   _monthNameWidget(monthName) {
@@ -187,7 +168,6 @@ class _PlanScreenState extends State<PlanScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     selectedTime = selectedDate.toString().split(' ')[0];
     getData();
   }
@@ -197,7 +177,7 @@ class _PlanScreenState extends State<PlanScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
-        title: Text('Plans'),
+        title: Text('Plan Detail'),
       ),
       body: Column(
         children: [
@@ -205,7 +185,7 @@ class _PlanScreenState extends State<PlanScreen> {
           Expanded(
               child: ListView.separated(
                   itemBuilder: (context, index) {
-                    return buildItemList(plans[index]);
+                    return planItem(plans[index]);
                   },
                   separatorBuilder: (context, index) {
                     return Divider(
@@ -218,64 +198,77 @@ class _PlanScreenState extends State<PlanScreen> {
     );
   }
 
-  Widget buildItemList(PlanLocation planLocation) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget planItem(PlanDay planDay) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 30),
-          child: RotatedBox(
-            quarterTurns: -1,
-            child: Text(''),
-          ),
+          padding: const EdgeInsets.all(16),
+          child: ComponentText.buildTextWidget(
+              title: planDay.title, fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 6),
-            height: 140,
-            width: 300,
-            decoration: BoxDecoration(
-                color: ConstantColor.medblue,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    topLeft: Radius.circular(40))),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ComponentSizedBox.topMargin(size: 20),
-                  ComponentText.buildTextWidget(
-                      title: planLocation.name,
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                  ComponentSizedBox.topMargin(size: 15),
-                  InkWell(
-                    onTap: () {
-                      Get.to(PlanDetailScreen(
-                        selectedPlan: planLocation.name,
-                      ));
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      margin: EdgeInsets.only(right: 20),
-                      decoration: BoxDecoration(
-                        color: Color(0xff336C7E),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(Icons.chevron_right_rounded,
-                          color: Colors.white),
+        ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return buildItemList(planDay.plans[index],planDay.title);
+            },
+            itemCount: planDay.plans.length),
+      ],
+    );
+  }
+
+  Widget buildItemList(PlanLocation planLocation,String day) {
+    return  Align(
+        alignment: Alignment.topRight,
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: 6),
+          height: 140,
+          width: 300,
+          decoration: BoxDecoration(
+              color: ConstantColor.medblue,
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40), topLeft: Radius.circular(40))),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ComponentSizedBox.topMargin(size: 20),
+                ComponentText.buildTextWidget(
+                    title: planLocation.name,
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                ComponentSizedBox.topMargin(size: 15),
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        _launchURL(planLocation.location);
+                      },
+                      child: ComponentText.buildTextWidget(
+                          title: 'Location',
+                          textDecoration: TextDecoration.underline,
+                          color: Color(0xff255EBA)),
                     ),
-                  )
-                ],
-              ),
+
+                    ComponentSizedBox.sideMargin(size: 140),
+                  ],
+                ),
+                IconButton(onPressed: (){
+                   Get.to(EditPlaceScreen(selectedPlan: widget.selectedPlan,day: day,planLocation: planLocation,));
+                }, icon: Icon(Icons.edit,color: Colors.white,))
+              ],
             ),
           ),
         ),
-      ],
+      
     );
+  }
+
+  void _launchURL(String url) async {
+    print(url);
+    if (!await launch(url)) throw 'Could not launch $url';
   }
 }

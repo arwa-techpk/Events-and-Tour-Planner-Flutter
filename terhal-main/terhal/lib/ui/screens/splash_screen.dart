@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Get.offAll(BottomNavigation());
       } else {
        // Navigator.popAndPushNamed(context, SignIn.id);
-       Get.offAll(const WelcomeScreen());
+       Get.offAll( WelcomeScreen());
       }
     });
   }

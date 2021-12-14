@@ -285,12 +285,12 @@ class _SelectPlanScreenState extends State<SelectPlanScreen> {
                     }
                     if (_chosenValue == 'Al Khobar') {
                       Get.to(SelectDayScreen(
-                        selectPlan:( 'Alkhobar_' + selectedBudget).toLowerCase(),
+                        selectPlan:( 'Alkhobar_' + selectedBudget),
                         city: _chosenValue,
                       ));
                     } else {
                       Get.to(SelectDayScreen(
-                        selectPlan: (_chosenValue + '_' + selectedBudget).toLowerCase(),
+                        selectPlan: (_chosenValue + '_' + selectedBudget),
                         city: _chosenValue,
                       ));
                     }

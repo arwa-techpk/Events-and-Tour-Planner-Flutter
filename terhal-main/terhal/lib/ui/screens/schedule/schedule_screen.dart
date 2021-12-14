@@ -2,6 +2,7 @@ import 'package:calendar_strip/calendar_strip.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:terhal/components/bottom_navigation.dart';
 import 'package:terhal/components/component_button.dart';
@@ -58,6 +59,28 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     });
   }
 
+  deletePlan(id) {
+    Utils.showLoader();
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+
+    print(firebaseUser.uid);
+    print(selectedTime);
+
+    firestoreInstance
+        .collection("plans")
+        .doc(firebaseUser.uid)
+        .collection(selectedTime)
+        .doc(id)
+        .delete();
+    // getData();
+    plans.removeWhere((element) => element.id == id);
+    setState(() {});
+    Utils.hideLoader();
+    Fluttertoast.showToast(msg: 'Deleted uccessfully');
+
+    print("success!");
+  }
+
   getData() {
     plans.clear();
     var firebaseUser = FirebaseAuth.instance.currentUser;
@@ -78,6 +101,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
           plans.add(PlanLocation(
+              id: result.id,
               name: result['city'],
               location: result['location'] ?? '',
               planType: result['plan_type']));
@@ -131,6 +155,41 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   void _launchURL(String url) async {
     if (!await launch(url)) throw 'Could not launch $url';
+  }
+
+  showAlertDialog(BuildContext context,String docId) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Yes"),
+      onPressed: () {
+        deletePlan(docId);
+         Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Schedule"),
+      content: Text("Are you sure you want to delete schedule?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   _monthNameWidget(monthName) {
@@ -296,7 +355,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           alignment: Alignment.topRight,
           child: Container(
             margin: EdgeInsets.symmetric(vertical: 6),
-            height: 140,
+            height: 160,
             width: 300,
             decoration: BoxDecoration(
                 color: ConstantColor.medblue,
@@ -316,7 +375,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       fontWeight: FontWeight.bold),
                   ComponentSizedBox.topMargin(size: 15),
                   Row(
-                   
                     children: [
                       Container(),
                       planLocation.location != null &&
@@ -340,8 +398,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                 ));
                               },
                               child: Container(
-                                height: 40,
-                                width: 40,
+                                height: 35,
+                                width: 35,
                                 margin: EdgeInsets.only(right: 20),
                                 decoration: BoxDecoration(
                                   color: Color(0xff336C7E),
@@ -353,7 +411,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             )
                           : Container(),
                     ],
-                  )
+                  ),
+                  ComponentSizedBox.topMargin(size: 5),
+                  IconButton(
+                      onPressed: () {
+                        showAlertDialog(context,planLocation.id);
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ))
                 ],
               ),
             ),

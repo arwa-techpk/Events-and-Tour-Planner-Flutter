@@ -9,31 +9,34 @@ import 'package:terhal/components/component_sized_box.dart';
 import 'package:terhal/constants/constants_colors.dart';
 import 'package:terhal/controllers/auth/login/login_controller.dart';
 import 'package:terhal/helpers/utils.dart';
+import 'package:terhal/models/plan.dart';
 import 'package:terhal/utils/size_config.dart';
 
-class AddPlaceScreen extends StatefulWidget {
-  int day;
+class EditPlaceScreen extends StatefulWidget {
+  String day;
   String selectedPlan;
+  PlanLocation planLocation;
   String city;
-  AddPlaceScreen({this.day, this.selectedPlan, this.city});
+  EditPlaceScreen({this.day, this.selectedPlan, this.city, this.planLocation});
 
   @override
-  _AddPlaceScreenState createState() => _AddPlaceScreenState();
+  _EditPlaceScreenState createState() => _EditPlaceScreenState();
 }
 
-class _AddPlaceScreenState extends State<AddPlaceScreen> {
+class _EditPlaceScreenState extends State<EditPlaceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ConstantColor.medblue,
-        title: Text('Day ${widget.day}'),
+        title: Text('${widget.day}'),
       ),
       body: Container(
         margin: EdgeInsets.all(24),
         child: _SignInForm(
           day: widget.day,
           selectedPlan: widget.selectedPlan,
+          planLocation: widget.planLocation,
           city: widget.city,
         ),
       ),
@@ -42,10 +45,11 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 }
 
 class _SignInForm extends StatefulWidget {
-  int day;
+  String day;
   String selectedPlan;
   String city;
-  _SignInForm({this.day, this.selectedPlan, this.city});
+  PlanLocation planLocation;
+  _SignInForm({this.day, this.selectedPlan, this.city, this.planLocation});
   @override
   __SignInFormState createState() => __SignInFormState();
 }
@@ -58,30 +62,19 @@ class __SignInFormState extends State<_SignInForm> {
 
   bool _autoValidate = false;
 
-  addPlan()async {
+  addPlan() async {
     Utils.showLoader();
-    await  firestoreInstance
-        .collection('get_a_plan')
-        .doc(widget.selectedPlan).set({'test':'test'});
-         await  firestoreInstance
-        .collection('get_a_plan')
-        .doc(widget.selectedPlan).collection(widget.selectedPlan)
-        .doc("Plan").set({'test':'test'});
-          await  firestoreInstance
-        .collection('get_a_plan')
-        .doc(widget.selectedPlan).collection(widget.selectedPlan)
-        .doc("Plan") .collection('days')
-        .doc("Day${widget.day}").set({'test':'test'});
+   
     firestoreInstance
         .collection('get_a_plan')
         .doc(widget.selectedPlan)
         .collection(widget.selectedPlan)
         .doc("Plan")
         .collection('days')
-        .doc("Day${widget.day}")
+        .doc(widget.day)
         .collection('places')
-        .doc()
-        .set({
+        .doc(widget.planLocation.id)
+        .update({
       "name": _nameController.text,
       "location": _locationController.text,
     }).then((_) {
@@ -89,6 +82,14 @@ class __SignInFormState extends State<_SignInForm> {
       Navigator.of(context).pop();
       print("success!");
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _locationController.text = widget.planLocation.location;
+    _nameController.text = widget.planLocation.name;
   }
 
   @override
